@@ -82,8 +82,8 @@ To develop and test the PDF generation locally, you'll need to install several d
 - **Pandoc**: Document conversion system that transforms markdown to LaTeX/PDF
 - **LaTeX**: Typesetting system required for PDF generation
 - **Additional LaTeX packages**: For scientific formatting, math equations, and images
+- **Inkscape** (or alternative): For converting SVG images to PDF format for LaTeX inclusion
 - **Git**: Version control for repository management
-
 ### Installation by Operating System
 
 #### macOS
@@ -107,9 +107,9 @@ To develop and test the PDF generation locally, you'll need to install several d
    sudo tlmgr install latexmk fncychap titlesec tabulary varwidth framed wrapfig capt-of needspace xcolor
    ```
 
-3. **Additional Tools**:
+3. **Inkscape and Additional Tools**:
    ```bash
-   brew install librsvg python imagemagick
+   brew install inkscape librsvg python imagemagick
    ```
 
 #### Ubuntu/Debian Linux
@@ -129,9 +129,9 @@ To develop and test the PDF generation locally, you'll need to install several d
    sudo apt install texlive texlive-latex-extra texlive-fonts-recommended texlive-science
    ```
 
-3. **Additional Tools**:
+3. **Inkscape and Additional Tools**:
    ```bash
-   sudo apt install librsvg2-bin python3 imagemagick
+   sudo apt install inkscape librsvg2-bin python3 imagemagick
    ```
 
 #### Windows
@@ -148,6 +148,7 @@ To develop and test the PDF generation locally, you'll need to install several d
 3. **Additional Tools**:
    - Install [Git for Windows](https://git-scm.com/download/win)
    - Install [Python](https://www.python.org/downloads/windows/)
+   - Install [Inkscape](https://inkscape.org/release/) for SVG to PDF conversion
    - Optionally install [ImageMagick](https://imagemagick.org/script/download.php#windows)
 
 ### Testing Locally
@@ -209,6 +210,13 @@ Once dependencies are installed, you can test the conversion process:
    - Ensure images are in supported formats (PNG, JPEG, SVG)
    - For SVG support, ensure that librsvg is installed
    - Verify file paths are correct relative to the markdown file
+
+3. **SVG conversion issues**:
+   - For proper SVG handling, Inkscape is the preferred tool
+   - If Inkscape is not available, the system will fall back to librsvg2-bin (rsvg-convert)
+   - SVG files with complex elements (gradients, filters, etc.) may require Inkscape for proper conversion
+   - If you see LaTeX errors with `\endcsname` related to images, check that your SVG files are being properly converted to PDF
+   - You can manually pre-convert SVG files to PDF with: `inkscape --export-filename=output.pdf input.svg`
 
 4. **Line ending issues**:
    - Scripts may fail with "bad interpreter" errors on Unix systems if they have Windows line endings
@@ -423,6 +431,28 @@ Supported attributes:
 - `width` and `height`: Control image dimensions (percentage or absolute)
 - `orientation`: Set to `landscape` for landscape images
 - `.left`, `.right`, `.center`: Control image alignment
+### SVG Image Handling
+
+SVG images require special handling when included in LaTeX documents. The workflow supports several methods:
+
+1. **Automatic conversion**: SVG files are automatically converted to PDF during the workflow
+2. **Manual conversion**: You can pre-convert SVG files to PDF using Inkscape
+3. **Fallback conversion**: If Inkscape is not available, the system uses librsvg2-bin (rsvg-convert)
+
+Common parameters for SVG conversion:
+```bash
+# Using Inkscape (best quality)
+inkscape --export-filename=output.pdf input.svg
+
+# Using rsvg-convert (fallback)
+rsvg-convert -f pdf -o output.pdf input.svg
+```
+
+When referencing SVG images in markdown, use the SVG filename - the conversion will happen automatically:
+
+```markdown
+![Caption](../figures/image.svg){width=80%}
+```
 
 ## Workflow Details
 
