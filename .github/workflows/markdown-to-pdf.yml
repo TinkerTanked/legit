@@ -85,11 +85,33 @@ jobs:
       - name: Install additional dependencies
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends wget curl fontconfig ghostscript imagemagick inkscape
+          apt-get install -y --no-install-recommends \
+            wget curl \
+            fontconfig \
+            ghostscript \
+            imagemagick
 
           # Install LaTeX packages
           tlmgr update --self
           tlmgr install mathtools physics algorithms algorithmicx algorithm2e adjustbox collectbox xkeyval pdflscape threeparttable
+          
+      # Step 4b: Install Inkscape with minimal dependencies
+      - name: Install Inkscape
+        timeout-minutes: 10
+        run: |
+          echo "Installing Inkscape with minimal dependencies..."
+          apt-get update
+          apt-get install -y --no-install-recommends inkscape
+          
+          # Verify Inkscape installation
+          if command -v inkscape &> /dev/null; then
+            echo "Inkscape successfully installed: $(inkscape --version)"
+          else
+            echo "::warning::Inkscape installation failed, SVG to PDF conversion may not work"
+            # Install a fallback converter
+            apt-get install -y --no-install-recommends librsvg2-bin
+            echo "Installed librsvg2-bin as fallback: $(rsvg-convert --version)"
+          fi
           
       # Verify Pandoc and LaTeX are pre-installed
       - name: Verify pre-installed tools
