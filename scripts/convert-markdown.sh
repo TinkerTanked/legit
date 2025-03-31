@@ -197,6 +197,7 @@ convert_svg_to_pdf() {
   local images_dir="$PROJECT_ROOT/$IMAGES_DIR"
   
   log_info "Checking for SVG files in $images_dir"
+  log_info "PROJECT_ROOT=$PROJECT_ROOT, IMAGES_DIR=$IMAGES_DIR"
   
   # Check if the images directory exists
   if [ ! -d "$images_dir" ]; then
@@ -217,6 +218,9 @@ convert_svg_to_pdf() {
   # Check if Inkscape is available for conversion
   if command -v inkscape &> /dev/null; then
     for svg_file in "${svg_files[@]}"; do
+      # Get just the basename without extension
+      local base_name=$(basename "$svg_file" .svg)
+      # Create PDF in the same location as SVG with same name
       local pdf_file="${svg_file%.svg}.pdf"
       
       # Only convert if PDF doesn't exist or SVG is newer
@@ -224,6 +228,14 @@ convert_svg_to_pdf() {
         log_info "Converting $svg_file to PDF using Inkscape"
         if ! inkscape --export-filename="$pdf_file" "$svg_file" 2>/dev/null; then
           log_error "Failed to convert $svg_file to PDF"
+        else
+          log_info "Successfully created $pdf_file"
+          # Verify that the PDF was created
+          if [ -f "$pdf_file" ]; then
+            log_info "Verified: $pdf_file exists ($(du -h "$pdf_file" | cut -f1))"
+          else
+            log_error "PDF file was not created: $pdf_file"
+          fi
         fi
       else
         log_info "PDF version of $svg_file already exists and is up to date"
@@ -232,12 +244,20 @@ convert_svg_to_pdf() {
   # If Inkscape is not available, try using rsvg-convert
   elif command -v rsvg-convert &> /dev/null; then
     for svg_file in "${svg_files[@]}"; do
+      local base_name=$(basename "$svg_file" .svg)
       local pdf_file="${svg_file%.svg}.pdf"
       
       if [ ! -f "$pdf_file" ] || [ "$svg_file" -nt "$pdf_file" ]; then
         log_info "Converting $svg_file to PDF using rsvg-convert"
         if ! rsvg-convert -f pdf -o "$pdf_file" "$svg_file" 2>/dev/null; then
           log_error "Failed to convert $svg_file to PDF"
+        else
+          log_info "Successfully created $pdf_file"
+          if [ -f "$pdf_file" ]; then
+            log_info "Verified: $pdf_file exists ($(du -h "$pdf_file" | cut -f1))"
+          else
+            log_error "PDF file was not created: $pdf_file"
+          fi
         fi
       else
         log_info "PDF version of $svg_file already exists and is up to date"
@@ -246,12 +266,20 @@ convert_svg_to_pdf() {
   # If no conversion tools are available, try using cairosvg
   elif command -v cairosvg &> /dev/null; then
     for svg_file in "${svg_files[@]}"; do
+      local base_name=$(basename "$svg_file" .svg)
       local pdf_file="${svg_file%.svg}.pdf"
       
       if [ ! -f "$pdf_file" ] || [ "$svg_file" -nt "$pdf_file" ]; then
         log_info "Converting $svg_file to PDF using cairosvg"
         if ! cairosvg "$svg_file" -o "$pdf_file" 2>/dev/null; then
           log_error "Failed to convert $svg_file to PDF"
+        else
+          log_info "Successfully created $pdf_file"
+          if [ -f "$pdf_file" ]; then
+            log_info "Verified: $pdf_file exists ($(du -h "$pdf_file" | cut -f1))"
+          else
+            log_error "PDF file was not created: $pdf_file"
+          fi
         fi
       else
         log_info "PDF version of $svg_file already exists and is up to date"
@@ -260,6 +288,10 @@ convert_svg_to_pdf() {
   else
     log_warning "No SVG to PDF conversion tools found (Inkscape, rsvg-convert, or cairosvg). SVG images may not render correctly."
   fi
+  
+  # List all PDF files in the images directory for verification
+  log_info "Listing all PDF files in $images_dir:"
+  find "$images_dir" -name "*.pdf" -exec ls -la {} \; 2>/dev/null || log_warning "No PDF files found in $images_dir"
   
   log_info "SVG to PDF conversion completed"
 }
@@ -297,9 +329,10 @@ convert_markdown_to_pdf() {
   log_info "Running pandoc conversion..."
   
   # Attempt conversion with error handling
-  if ! pandoc -s "$md_file" \
+  if ! pandoc -s --wrap=preserve "$md_file" \
        --pdf-engine="$PDF_ENGINE" \
        --template="$TEMPLATE_FILE" \
+       --resource-path="$PROJECT_ROOT" \
        -V title="$TITLE" \
        -V author="$AUTHOR" \
        -V date="$DATE" \
@@ -307,6 +340,20 @@ convert_markdown_to_pdf() {
        $extra_options \
        -o "$output_file"; then
     log_error "Pandoc conversion failed for $md_file"
+    # Check if there was an error
+    # Extract LaTeX file for debugging
+    local tex_output="${output_file%.pdf}.tex"
+    pandoc -s --wrap=preserve "$md_file" \
+      --pdf-engine="$PDF_ENGINE" \
+      --template="$TEMPLATE_FILE" \
+      --resource-path="$PROJECT_ROOT" \
+      -V title="$TITLE" \
+      -V author="$AUTHOR" \
+      -o "$tex_output" $reference_option $extra_options
+      
+    log_info "Created LaTeX file for debugging: $tex_output"
+    log_info "Checking image references in LaTeX:"
+    grep -n "includegraphics" "$tex_output" || log_info "No includegraphics found in LaTeX output"
     return 1
   fi
   
