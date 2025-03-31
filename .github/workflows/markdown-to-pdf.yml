@@ -90,6 +90,10 @@ jobs:
             fontconfig \
             ghostscript \
             imagemagick
+
+          # Install LaTeX packages
+          tlmgr update --self
+          tlmgr install mathtools
           
       # Verify Pandoc and LaTeX are pre-installed
       - name: Verify pre-installed tools

@@ -26,6 +26,7 @@ header-includes:
   - \usepackage{algorithmic}
   - \usepackage{amsmath}
   - \usepackage{amsthm}
+  - \usepackage{mathtools}
   - \usepackage{tcolorbox}
   - \usepackage{booktabs}
 journal: "Journal of Quantum Information"
@@ -134,7 +135,7 @@ As shown by [@Collins2002], this presents a greater violation of local realism a
 
 We used a linear ion trap with $^{40}$Ca$^+$ ions to prepare and measure entangled states in dimensions $d = 2, 3, 4$. The experimental setup is shown in Figure \ref{fig:iontrap}.
 
-![Linear ion trap setup used for preparing high-dimensional entangled states. The trap consists of four gold-plated electrodes with RF and DC voltages applied as indicated. Caption formatting will differ between scientific and academic templates, with the scientific template using smaller font and more compact spacing.](../figures/ion_trap_setup.svg){#fig:iontrap .portrait}
+![Linear ion trap setup used for preparing high-dimensional entangled states. The trap consists of four gold-plated electrodes with RF and DC voltages applied as indicated. Caption formatting will differ between scientific and academic templates, with the scientific template using smaller font and more compact spacing.](./figures/ion_trap_setup.svg){#fig:iontrap .portrait}
 
 ## Quantum State Preparation {#sec:methods-preparation}
 
@@ -197,7 +198,7 @@ We achieved state fidelities exceeding 0.98 for $d=2$, 0.95 for $d=3$, and 0.91 
 
 Our measurements show violations of the generalized Bell inequalities with statistical significance exceeding 15 standard deviations. Figure 2 shows the measured values of $I_d$ compared to the classical bound.
 
-![Experimental results showing the violation of Bell inequalities in higher dimensions. The x-axis represents the Hilbert space dimension d, while the y-axis shows the measured Bell parameter $I_d$. The dashed line indicates the classical bound, while data points represent experimental measurements with error bars indicating statistical uncertainty.](../figures/entanglement_results.svg){#fig:bellresults .landscape}
+![Experimental results showing the violation of Bell inequalities in higher dimensions. The x-axis represents the Hilbert space dimension d, while the y-axis shows the measured Bell parameter $I_d$. The dashed line indicates the classical bound, while data points represent experimental measurements with error bars indicating statistical uncertainty.](./figures/entanglement_results.svg){#fig:bellresults .landscape}
 
 The experimental values approach the quantum limit:
 
@@ -237,13 +238,13 @@ This paper demonstrates two approaches to figure orientation:
 1. **Portrait figures** (like Figure \ref{fig:iontrap}): These are standard figures that maintain the default page orientation. They work well for tall diagrams, apparatus setups, and conceptual illustrations. In the markdown, they are formatted with the `.portrait` class:
 
 ```markdown
-![Caption](../figures/ion_trap_setup.svg){#fig:iontrap .portrait}
+![Caption](./figures/ion_trap_setup.svg){#fig:iontrap .portrait}
 ```
 
 2. **Landscape figures** (like Figure \ref{fig:bellresults}): These figures are rotated 90 degrees to accommodate wide data visualizations, such as complex charts or comparative graphs. In the markdown, they are formatted with the `.landscape` class:
 
 ```markdown
-![Caption](../figures/entanglement_results.svg){#fig:bellresults .landscape}
+![Caption](./figures/entanglement_results.svg){#fig:bellresults .landscape}
 ```
 
 The LaTeX template automatically processes these classes and applies the appropriate formatting.
