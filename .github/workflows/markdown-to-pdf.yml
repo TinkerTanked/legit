@@ -29,6 +29,9 @@ jobs:
   convert-and-upload:
     name: Convert Markdown to PDF and Upload to S3
     runs-on: ubuntu-latest
+    container:
+      image: pandoc/latex:latest-ubuntu
+      options: --user root
     
     steps:
       # Step 1: Check out the repository content
@@ -44,8 +47,8 @@ jobs:
             echo "Using configuration from configs/workflow-config.yml"
             
             # Parse configuration values using yq
-            sudo apt-get update
-            sudo apt-get install -y wget
+            apt-get update
+            apt-get install -y wget
             wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
             chmod +x /usr/local/bin/yq
             
@@ -68,35 +71,22 @@ jobs:
         with:
           node-version: '18'
           
-      # Step 4: Install pandoc for markdown to PDF conversion
-      - name: Install Pandoc
-        uses: r-lib/actions/setup-pandoc@v2
-        with:
-          pandoc-version: '2.19.2'
-        
-      # Step 5: Install LaTeX for scientific PDF generation with caching
-      - name: Setup LaTeX
-        uses: r-lib/actions/setup-tinytex@v2
-        with:
-          tinytex-version: latest
-          
-      - name: Install LaTeX packages
+      # Step 4: Install additional dependencies (if any)
+      - name: Install additional dependencies
         run: |
-          tlmgr update --self
-          tlmgr install \
-            xetex xetex-def \
-            unicode-math lm-math \
-            amsmath amsfonts amssymb \
-            listings fancyvrb \
-            booktabs longtable \
-            graphicx grffile \
-            hyperref xcolor \
-            ulem geometry setspace \
-            babel latexmk fancyhdr \
-            footnotehyper caption \
-            pdflscape pdfpages \
-            fontspec realscripts \
-            titlesec
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            wget curl \
+            fontconfig \
+            ghostscript \
+            imagemagick
+          
+      # Verify Pandoc and LaTeX are pre-installed
+      - name: Verify pre-installed tools
+        run: |
+          echo "Pandoc version: $(pandoc --version | head -n 1)"
+          echo "LaTeX version: $(pdflatex --version | head -n 1)"
+          echo "XeLaTeX version: $(xelatex --version | head -n 1)"
       
       # Step 6: Find all markdown files (if not manually specified)
       - name: Find markdown files

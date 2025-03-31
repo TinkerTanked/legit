@@ -166,7 +166,7 @@ The GitHub workflow (`markdown-to-pdf.yml`) performs the following steps:
 
 1. **Trigger**: Activates when markdown files are pushed to the main branch or when manually triggered
 2. **Configuration Loading**: Reads settings from `configs/workflow-config.yml`
-3. **Environment Setup**: Installs Pandoc, LaTeX, and other required dependencies with caching for efficiency
+3. **Environment Setup**: Uses a Docker container with pre-installed Pandoc, LaTeX, and other required dependencies to speed up execution time
 4. **Template Application**: Applies the scientific paper LaTeX template from the templates directory
 5. **PDF Generation**: Converts the markdown to a properly formatted PDF using Pandoc
 6. **S3 Upload**: Securely uploads the PDF to your configured S3 bucket
@@ -355,6 +355,15 @@ The workflow:
 2. Installs only required LaTeX packages for faster setup
 3. Provides detailed logs for debugging
 4. Uses a modular script architecture for maintainability
+
+### Performance Optimizations
+
+To ensure fast and efficient workflow execution:
+
+1. **Docker Container**: The workflow uses a pre-built Docker container with Pandoc, LaTeX, and all required dependencies already installed, eliminating installation time
+2. **Dependency Caching**: When not using containers, the workflow caches dependencies to speed up subsequent runs
+3. **Optimized LaTeX Installation**: Only installs the specific packages needed rather than the full distribution
+4. **Parallel Processing**: Where possible, operations are parallelized for faster execution
 
 ### Conversion Process
 
