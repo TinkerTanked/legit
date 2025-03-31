@@ -17,6 +17,18 @@ function get_base_filename(path)
   return base_filename
 end
 
+-- Function to escape special LaTeX characters in paths
+function escape_latex_path(path)
+  -- LaTeX special characters that need escaping: # $ % & _ ^ ~ \ { }
+  local escaped = path:gsub("([#$%%&_{}^~\\])", "\\%1")
+  return escaped
+end
+
+-- Function to extract just the filename part of a path
+function get_filename(path)
+  return path:match("([^/\\]+)$") or path
+end
+
 -- Function to determine the template from metadata
 function determine_template(meta)
   if meta.template then
@@ -60,20 +72,28 @@ function Image(elem)
         latex_code = latex_code .. "[" .. img_id .. "]"
       end
       
-      -- Extract base filename for label but use full path for the image
-      local base_filename = get_base_filename(image_path)
+      -- Use just the filename part rather than full path to avoid LaTeX path issues
+      local filename = get_filename(image_path)
+      -- Escape special LaTeX characters in the filename
+      local escaped_filename = escape_latex_path(filename)
       
       latex_code = latex_code .. "{" .. elem.attributes.width .. "}{" .. 
-                   base_filename .. "}{" .. caption .. "}{" .. image_path .. "}"
+                   img_id .. "}{" .. caption .. "}{" .. escaped_filename .. "}"
       
       return pandoc.RawInline("latex", latex_code)
     else
       -- For scientific template, use the \landscapefigure command with different parameter order
       -- Scientific template expects: \landscapefigure{label}{caption}{width}{path}
       if template_type == "scientific" then
+        -- Use the provided ID or generate one from the base filename
         local label = img_id ~= "" and img_id or "fig:" .. get_base_filename(image_path)
+        -- Use just the filename part rather than full path
+        local filename = get_filename(image_path)
+        -- Escape special LaTeX characters in the filename
+        local escaped_filename = escape_latex_path(filename)
+        
         local latex_code = "\\landscapefigure{" .. label .. "}{" .. 
-                           caption .. "}{" .. elem.attributes.width .. "}{" .. image_path .. "}"
+                           caption .. "}{" .. elem.attributes.width .. "}{" .. escaped_filename .. "}"
         return pandoc.RawInline("latex", latex_code)
       else
         -- For other templates, use the landscape environment
@@ -106,20 +126,28 @@ function Image(elem)
         latex_code = latex_code .. "[" .. img_id .. "]"
       end
       
-      -- Extract base filename for label but use full path for the image
-      local base_filename = get_base_filename(image_path)
+      -- Use just the filename part rather than full path to avoid LaTeX path issues
+      local filename = get_filename(image_path)
+      -- Escape special LaTeX characters in the filename
+      local escaped_filename = escape_latex_path(filename)
       
       latex_code = latex_code .. "{" .. elem.attributes.width .. "}{" .. 
-                   base_filename .. "}{" .. caption .. "}{" .. image_path .. "}"
+                   img_id .. "}{" .. caption .. "}{" .. escaped_filename .. "}"
       
       return pandoc.RawInline("latex", latex_code)
     else
       -- For scientific template, use the \portraitfigure command with different parameter order
       -- Scientific template expects: \portraitfigure{label}{caption}{width}{path}
       if template_type == "scientific" then
+        -- Use the provided ID or generate one from the base filename
         local label = img_id ~= "" and img_id or "fig:" .. get_base_filename(image_path)
+        -- Use just the filename part rather than full path
+        local filename = get_filename(image_path)
+        -- Escape special LaTeX characters in the filename
+        local escaped_filename = escape_latex_path(filename)
+        
         local latex_code = "\\portraitfigure{" .. label .. "}{" .. 
-                           caption .. "}{" .. elem.attributes.width .. "}{" .. image_path .. "}"
+                           caption .. "}{" .. elem.attributes.width .. "}{" .. escaped_filename .. "}"
         return pandoc.RawInline("latex", latex_code)
       else
         -- For other templates, use standard figure formatting
