@@ -252,10 +252,9 @@ jobs:
           
           # Create a simple JSON file with metadata about available formats
           cat > pdfs/formats.json << EOF
-{
-  "available_formats": ["scientific", "academic"],
-  "last_updated": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-}
-EOF
+
+          "available_formats": ["scientific", "academic"],
+          "last_updated": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
           aws s3 cp pdfs/formats.json "s3://${{ secrets.S3_BUCKET }}/papers/formats.json" --content-type "application/json"
 
