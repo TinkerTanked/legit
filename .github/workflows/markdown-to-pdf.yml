@@ -178,7 +178,7 @@ jobs:
                 -V graphics=true \
                 -V linkcolor=blue \
                 -V geometry:margin=1in \
-                --lua-filter=<(echo 'function Image(elem) if elem.attributes.orientation == "landscape" then elem.attributes.width = "100%" return pandoc.Para({pandoc.RawBlock("latex", "\\begin{landscape}"), pandoc.RawInline("latex", "\\begin{figure}[htbp]\\centering"), elem, pandoc.RawInline("latex", "\\caption{" .. (elem.caption and pandoc.utils.stringify(elem.caption) or "") .. "}\\end{figure}"), pandoc.RawBlock("latex", "\\end{landscape}")}) end return nil end') \
+                --lua-filter=scripts/landscape-filter.lua \
                 -o "$output_pdf" || echo "::warning::Failed to convert $md_file"
             done
           fi

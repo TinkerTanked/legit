@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # ==============================================================================
 # generate-all-formats.sh
@@ -338,7 +338,7 @@ function main {
     parse_arguments "$@"
     
     # Find markdown files
-    mapfile -t md_files < <(find_markdown_files)
+    md_files=("${(@f)$(find_markdown_files)}")
     
     # Count for summary
     local total_files=${#md_files[@]}
