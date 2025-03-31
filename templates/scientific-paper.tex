@@ -71,6 +71,9 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
+% Define pandocbounded command to fix conversion error
+\providecommand{\pandocbounded}[1]{\csname pandocbounded#1\endcsname}
+
 % ======== CUSTOM COMMANDS ========
 % For landscape figures
 \newcommand{\landscapefigure}[4]{%
