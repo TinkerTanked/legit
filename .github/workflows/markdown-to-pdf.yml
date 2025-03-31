@@ -85,11 +85,12 @@ jobs:
       - name: Install additional dependencies
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends \
-            wget curl \
-            fontconfig \
-            ghostscript \
-            imagemagick
+          apt-get install -y --no-install-recommends \\\
+            wget curl \\\
+            fontconfig \\\
+            ghostscript \\\
+            imagemagick \\\
+            inkscape
 
           # Install LaTeX packages
           tlmgr update --self

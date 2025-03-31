@@ -189,7 +189,81 @@ process_metadata() {
   fi
   
   log_info "Metadata: Title='$TITLE', Author='$AUTHOR', Date='$DATE'"
+}\n
+# Function: convert_svg_to_pdf
+# Description: Converts SVG files to PDF for LaTeX inclusion
+convert_svg_to_pdf() {
+  local images_dir="$PROJECT_ROOT/$IMAGES_DIR"
+  
+  log_info "Checking for SVG files in $images_dir"
+  
+  # Check if the images directory exists
+  if [ ! -d "$images_dir" ]; then
+    log_warning "Images directory not found: $images_dir"
+    return 0
+  fi
+  
+  # Find all SVG files in the images directory
+  local svg_files=($(find "$images_dir" -name "*.svg" 2>/dev/null))
+  
+  if [ ${#svg_files[@]} -eq 0 ]; then
+    log_info "No SVG files found in $images_dir"
+    return 0
+  fi
+  
+  log_info "Found ${#svg_files[@]} SVG files to convert"
+  
+  # Check if Inkscape is available for conversion
+  if command -v inkscape &> /dev/null; then
+    for svg_file in "${svg_files[@]}"; do
+      local pdf_file="${svg_file%.svg}.pdf"
+      
+      # Only convert if PDF doesn't exist or SVG is newer
+      if [ ! -f "$pdf_file" ] || [ "$svg_file" -nt "$pdf_file" ]; then
+        log_info "Converting $svg_file to PDF using Inkscape"
+        if ! inkscape --export-filename="$pdf_file" "$svg_file" 2>/dev/null; then
+          log_error "Failed to convert $svg_file to PDF"
+        fi
+      else
+        log_info "PDF version of $svg_file already exists and is up to date"
+      fi
+    done
+  # If Inkscape is not available, try using rsvg-convert
+  elif command -v rsvg-convert &> /dev/null; then
+    for svg_file in "${svg_files[@]}"; do
+      local pdf_file="${svg_file%.svg}.pdf"
+      
+      if [ ! -f "$pdf_file" ] || [ "$svg_file" -nt "$pdf_file" ]; then
+        log_info "Converting $svg_file to PDF using rsvg-convert"
+        if ! rsvg-convert -f pdf -o "$pdf_file" "$svg_file" 2>/dev/null; then
+          log_error "Failed to convert $svg_file to PDF"
+        fi
+      else
+        log_info "PDF version of $svg_file already exists and is up to date"
+      fi
+    done
+  # If no conversion tools are available, try using cairosvg
+  elif command -v cairosvg &> /dev/null; then
+    for svg_file in "${svg_files[@]}"; do
+      local pdf_file="${svg_file%.svg}.pdf"
+      
+      if [ ! -f "$pdf_file" ] || [ "$svg_file" -nt "$pdf_file" ]; then
+        log_info "Converting $svg_file to PDF using cairosvg"
+        if ! cairosvg "$svg_file" -o "$pdf_file" 2>/dev/null; then
+          log_error "Failed to convert $svg_file to PDF"
+        fi
+      else
+        log_info "PDF version of $svg_file already exists and is up to date"
+      fi
+    done
+  else
+    log_warning "No SVG to PDF conversion tools found (Inkscape, rsvg-convert, or cairosvg). SVG images may not render correctly."
+  fi
+  
+  log_info "SVG to PDF conversion completed"
 }
+
+# Function: convert_markdown_to_pdf
 
 # Function: convert_markdown_to_pdf
 # Description: Converts a markdown file to PDF using Pandoc
@@ -204,6 +278,9 @@ convert_markdown_to_pdf() {
   
   # Process metadata from the markdown file
   process_metadata "$md_file"
+  
+  # Convert SVG images to PDF for LaTeX inclusion
+  convert_svg_to_pdf
   
   # Prepare additional pandoc options from config
   local extra_options=$(get_config_value "pandoc_extra_options" "")
