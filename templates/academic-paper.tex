@@ -78,20 +78,20 @@
 \fancyfoot[C]{\thepage}
 
 % Custom figure and image handling commands
-\newcommand{\portraitfigure}[3]{
+\newcommand{\portraitfigure}[4]{
   \begin{figure}[htbp]
     \centering
-    \includegraphics[width=#1\textwidth]{#2}
+    \includegraphics[width=#1\textwidth]{#4}
     \caption{#3}
     \label{fig:#2}
   \end{figure}
 }
 
-\newcommand{\landscapefigure}[3]{
+\newcommand{\landscapefigure}[4]{
   \begin{landscape}
     \begin{figure}[htbp]
       \centering
-      \includegraphics[width=#1\textwidth]{#2}
+      \includegraphics[width=#1\textwidth]{#4}
       \caption{#3}
       \label{fig:#2}
     \end{figure}

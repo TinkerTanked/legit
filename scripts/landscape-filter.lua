@@ -6,6 +6,17 @@
 -- Variable to track which template is being used
 local template_type = "default"
 
+-- Function to extract the base filename (without extension) from a path
+function get_base_filename(path)
+  -- Extract just the filename part without directory
+  local filename = path:match("([^/\\]+)$") or path
+  
+  -- Remove extension
+  local base_filename = filename:match("(.+)%..+$") or filename
+  
+  return base_filename
+end
+
 -- Function to determine the template from metadata
 function determine_template(meta)
   if meta.template then
@@ -47,8 +58,12 @@ function Image(elem)
         -- Add label for cross-referencing
         latex_code = latex_code .. "[" .. img_id .. "]"
       end
+      
+      -- Extract base filename for label but use full path for the image
+      local base_filename = get_base_filename(image_path)
+      
       latex_code = latex_code .. "{" .. elem.attributes.width .. "}{" .. 
-                   image_path .. "}{" .. caption .. "}"
+                   base_filename .. "}{" .. caption .. "}{" .. image_path .. "}"
       
       return pandoc.RawInline("latex", latex_code)
     else
@@ -80,8 +95,12 @@ function Image(elem)
         -- Add label for cross-referencing
         latex_code = latex_code .. "[" .. img_id .. "]"
       end
+      
+      -- Extract base filename for label but use full path for the image
+      local base_filename = get_base_filename(image_path)
+      
       latex_code = latex_code .. "{" .. elem.attributes.width .. "}{" .. 
-                   image_path .. "}{" .. caption .. "}"
+                   base_filename .. "}{" .. caption .. "}{" .. image_path .. "}"
       
       return pandoc.RawInline("latex", latex_code)
     else

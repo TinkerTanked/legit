@@ -1,13 +1,20 @@
-# Legit - Markdown to Scientific Paper PDF Generator
+# ██╗     ███████╗ ██████╗ ██╗████████╗
+# ██║     ██╔════╝██╔════╝ ██║╚══██╔══╝
+# ██║     █████╗  ██║  ███╗██║   ██║   
+# ██║     ██╔══╝  ██║   ██║██║   ██║   
+# ███████╗███████╗╚██████╔╝██║   ██║   
+# ╚══════╝╚══════╝ ╚═════╝ ╚═╝   ╚═╝   
+#                                      
+# Lightweight Engine Generating Instant Typesets
 
-This repository contains a GitHub Actions workflow that automatically converts markdown files into professionally formatted scientific paper PDFs and uploads them to an Amazon S3 bucket for storage and distribution.
+This repository contains a powerful document conversion system that automatically transforms markdown files into professionally formatted PDF documents using multiple customizable templates. The system integrates with GitHub Actions to provide continuous delivery of beautifully formatted scientific papers, academic documents, and technical reports — all from a single markdown source.
 
 ## Overview
 
-Legit makes it easy to write scientific papers in markdown format and automatically get beautifully formatted PDFs that follow traditional scientific paper styling. The system:
+Legit makes it easy to write content once in markdown format and automatically generate multiple professionally formatted PDFs using different templates. With a single markdown source, you can produce documents that follow traditional scientific paper styling, academic formatting, or custom templates of your own design. The system:
 
 1. Watches for changes to markdown files in your repository
-2. Converts them to PDF using Pandoc and LaTeX with scientific formatting
+2. Converts them to PDF using Pandoc and LaTeX with scientific and academic formatting
 3. Uploads the generated PDFs to your S3 bucket
 4. Maintains both versioned copies and "latest" references
 5. Supports both portrait and landscape images with proper formatting
