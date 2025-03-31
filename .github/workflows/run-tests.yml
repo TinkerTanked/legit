@@ -1,0 +1,96 @@
+name: Run Test Suite
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  # Allow manual trigger from the Actions tab
+  workflow_dispatch:
+
+# Define permissions needed for the workflow
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Run Test Suite
+    runs-on: ubuntu-latest
+    container:
+      image: pandoc/latex:latest-ubuntu
+      options: --user root
+    
+    steps:
+      # Step 1: Check out the repository content
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # Step 2: Install additional dependencies
+      - name: Install additional dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            wget curl \
+            fontconfig \
+            ghostscript \
+            imagemagick \
+            librsvg2-bin
+
+      # Step 3: Install Inkscape with minimal dependencies
+      - name: Install Inkscape
+        timeout-minutes: 10
+        run: |
+          echo "Installing Inkscape with minimal dependencies..."
+          apt-get update
+          apt-get install -y --no-install-recommends inkscape
+          
+          # Verify Inkscape installation
+          if command -v inkscape &> /dev/null; then
+            echo "Inkscape successfully installed: $(inkscape --version)"
+          else
+            echo "::warning::Inkscape installation failed, SVG to PDF conversion may not work"
+            # Install a fallback converter
+            apt-get install -y --no-install-recommends librsvg2-bin
+            echo "Installed librsvg2-bin as fallback: $(rsvg-convert --version)"
+          fi
+          
+      # Step 4: Verify pre-installed tools
+      - name: Verify pre-installed tools
+        run: |
+          echo "Pandoc version: $(pandoc --version | head -n 1)"
+          echo "LaTeX version: $(pdflatex --version | head -n 1)"
+          echo "XeLaTeX version: $(xelatex --version | head -n 1)"
+      
+      # Step 5: Run the test suite
+      - name: Run tests
+        run: |
+          # Make sure all test scripts are executable
+          chmod +x tests/*.sh
+          
+          # Run the test suite
+          tests/run-tests.sh
+          
+          # Store the exit code
+          TEST_EXIT_CODE=$?
+          
+          # Output test results
+          if [ $TEST_EXIT_CODE -eq 0 ]; then
+            echo "::notice::All tests passed!"
+          else
+            echo "::error::Test suite failed"
+            exit $TEST_EXIT_CODE
+          fi
+      
+      # Step 6: Create artifacts of test outputs (if any)
+      - name: Archive test outputs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-outputs
+          path: |
+            tests/tmp/**/*.pdf
+            tests/tmp/**/*.log
+          retention-days: 5
+
