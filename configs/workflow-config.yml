@@ -1,3 +1,105 @@
+# Workflow Configuration
+# This file contains configuration settings for the markdown-to-pdf conversion workflow
+
+# General settings
+general:
+  # Default output directory for generated PDFs
+  default_output_dir: "pdfs"
+  # Figure directory containing images referenced in markdown files
+  figure_dir: "figures"
+  # Whether to generate an index of PDF files
+  generate_index: true
+  # Default language for documents
+  language: "en-US"
+
+# Format-specific settings
+formats:
+  # Scientific paper format
+  scientific:
+    # Output directory for scientific format PDFs
+    output_dir: "pdfs/scientific"
+    # Template file for scientific papers
+    template: "templates/scientific-paper.tex"
+    # PDF engine to use
+    pdf_engine: "xelatex"
+    # Additional pandoc options for scientific papers
+    pandoc_options:
+      - "--number-sections"
+      - "--bibliography=references.bib"
+      - "--csl=templates/ieee.csl"
+    # LaTeX-specific variables
+    variables:
+      fontsize: "11pt"
+      papersize: "letterpaper"
+      geometry: "margin=1in"
+      # Scientific-specific packages/settings
+      linkcolor: "blue"
+      header-includes:
+        - "\\usepackage{amsmath}"
+        - "\\usepackage{amssymb}"
+        - "\\usepackage{siunitx}"
+    
+  # Academic paper format
+  academic:
+    # Output directory for academic format PDFs
+    output_dir: "pdfs/academic"
+    # Template file for academic papers
+    template: "templates/academic-paper.tex"
+    # PDF engine to use
+    pdf_engine: "xelatex"
+    # Additional pandoc options for academic papers
+    pandoc_options:
+      - "--number-sections"
+      - "--bibliography=references.bib"
+      - "--csl=templates/chicago.csl"
+    # LaTeX-specific variables
+    variables:
+      fontsize: "12pt"
+      papersize: "a4paper"
+      geometry: "margin=2.5cm"
+      # Academic-specific packages/settings
+      linkcolor: "black"
+      header-includes:
+        - "\\usepackage{times}"
+        - "\\usepackage{setspace}"
+        - "\\doublespacing"
+
+# Input settings
+input:
+  # Directories to search for markdown files
+  content_dirs:
+    - "content"
+  # Specific files to process (leave empty to process all .md files in content_dirs)
+  specific_files: []
+  # Files to exclude from processing
+  exclude_files:
+    - "README.md"
+    - "LICENSE.md"
+
+# Output settings
+output:
+  # Whether to include timestamps in filenames
+  include_timestamp: true
+  # Whether to create "latest" copies of PDFs
+  create_latest_copies: true
+  # File extension for output files
+  extension: "pdf"
+
+# S3 upload settings (used in GitHub workflow)
+s3_upload:
+  # Whether to upload PDFs to S3
+  enabled: true
+  # S3 bucket name (override with GitHub secret)
+  bucket: "${S3_BUCKET}"
+  # Path prefix in the S3 bucket
+  prefix: "papers"
+  # Whether to make uploaded files public
+  public: true
+  # ACL for uploaded files
+  acl: "public-read"
+  # Content type for uploaded files
+  content_type: "application/pdf"
+
 # Workflow Configuration File
 # This file defines the configuration parameters for the Markdown to PDF GitHub workflow
 

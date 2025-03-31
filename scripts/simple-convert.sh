@@ -15,8 +15,8 @@ set -x
 INPUT_FILE="content/example-paper.md"
 # Default output directory
 OUTPUT_DIR="pdfs"
-# Default LaTeX template file
-TEMPLATE_FILE="templates/scientific-paper.tex"
+# Default PDF format (scientific or academic)
+FORMAT="scientific"
 # Default PDF engine
 PDF_ENGINE="xelatex"
 
@@ -28,8 +28,9 @@ while [[ "$#" -gt 0 ]]; do
     case $1 in
         --input=*) INPUT_FILE="${1#*=}" ;;
         --output-dir=*) OUTPUT_DIR="${1#*=}" ;;
-        --template=*) TEMPLATE_FILE="${1#*=}" ;;
+        --format=*) FORMAT="${1#*=}" ;;
         --engine=*) PDF_ENGINE="${1#*=}" ;;
+        --template=*) TEMPLATE_FILE="${1#*=}" ;;
         *) echo "Unknown parameter: $1"; exit 1 ;;
     esac
     shift
@@ -42,6 +43,15 @@ done
 if [ ! -f "$INPUT_FILE" ]; then
     echo "Error: Input file $INPUT_FILE does not exist."
     exit 1
+fi
+
+# Select template based on format if not explicitly specified
+if [ -z "${TEMPLATE_FILE+x}" ]; then
+    case $FORMAT in
+        scientific) TEMPLATE_FILE="templates/scientific-paper.tex" ;;
+        academic) TEMPLATE_FILE="templates/academic-paper.tex" ;;
+        *) echo "Error: Unknown format: $FORMAT. Use 'scientific' or 'academic'."; exit 1 ;;
+    esac
 fi
 
 # Check if template file exists
@@ -67,9 +77,12 @@ AUTHOR=$(grep -m 1 "^author:" "$INPUT_FILE" | sed 's/^author: \+//' | tr -d '"' 
 # ===================================
 # Get the filename without path and extension
 FILENAME=$(basename "$INPUT_FILE" .md)
-OUTPUT_FILE="$OUTPUT_DIR/$FILENAME.pdf"
+# Create format-specific directory
+FORMAT_DIR="$OUTPUT_DIR/$FORMAT"
+mkdir -p "$FORMAT_DIR"
+OUTPUT_FILE="$FORMAT_DIR/$FILENAME.pdf"
 
-echo "Converting $INPUT_FILE to $OUTPUT_FILE"
+echo "Converting $INPUT_FILE to $OUTPUT_FILE using $FORMAT format"
 
 # ===================================
 # PERFORM CONVERSION
@@ -90,7 +103,7 @@ pandoc -s "$INPUT_FILE" \
 # ===================================
 # Check if the PDF was created successfully
 if [ -f "$OUTPUT_FILE" ]; then
-    echo "Success: PDF generated at $OUTPUT_FILE"
+    echo "Success: $FORMAT format PDF generated at $OUTPUT_FILE"
     # Output file size
     ls -lh "$OUTPUT_FILE"
     exit 0

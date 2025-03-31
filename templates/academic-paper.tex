@@ -1,0 +1,143 @@
+% Academic Paper Template
+% This template provides a traditional academic format with different margins, fonts, and layout
+% compared to the scientific paper template, while remaining compatible with the same workflow.
+% 
+% It accepts the same variables as the scientific paper template but presents content in a more
+% traditional academic style.
+
+\documentclass[12pt, a4paper, onecolumn]{article}
+
+% Essential packages
+\usepackage[margin=1.2in]{geometry} % Different margins from scientific template
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[backend=biber, style=chicago-authordate, citestyle=authoryear]{biblatex}
+
+% Define missing commands that might be used by pandoc
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Font settings (different from scientific template)
+\setmainfont{Palatino Linotype}
+\setsansfont{Optima}
+\setmonofont{Consolas}
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=blue,
+    citecolor=blue,
+    pdfauthor={$author$},
+    pdftitle={$title$},
+    pdfpagemode={UseOutlines},
+    bookmarksopen=true,
+    pdfstartview={FitH}
+}
+
+% Define custom section formatting (different style from scientific template)
+\titleformat{\section}
+  {\normalfont\Large\bfseries\centering}{\thesection.}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\itshape}{\thesubsection.}{1em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection.}{1em}{}
+
+% Set line spacing
+\onehalfspacing
+
+% Header and footer configuration
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyhead[L]{\small\textit{$title$}}
+\fancyhead[R]{\small\textit{$author$}}
+\fancyfoot[C]{\thepage}
+
+% Custom figure and image handling commands
+\newcommand{\portraitfigure}[3]{
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=#1\textwidth]{#2}
+    \caption{#3}
+    \label{fig:#2}
+  \end{figure}
+}
+
+\newcommand{\landscapefigure}[3]{
+  \begin{landscape}
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=#1\textwidth]{#2}
+      \caption{#3}
+      \label{fig:#2}
+    \end{figure}
+  \end{landscape}
+}
+
+% Title page formatting
+\usepackage{titling}
+\pretitle{\begin{center}\LARGE\bfseries}
+\posttitle{\end{center}\vskip 0.5em}
+\preauthor{\begin{center}\large}
+\postauthor{\end{center}}
+\predate{\begin{center}\large}
+\postdate{\end{center}}
+
+\title{$title$}
+\author{$author$}
+\date{$date$}
+
+% Begin document
+\begin{document}
+
+% Print title page
+\maketitle
+\thispagestyle{empty}
+
+% Abstract if provided
+$if(abstract)$
+\begin{abstract}
+\noindent $abstract$
+\end{abstract}
+$endif$
+
+% Table of contents (optional)
+$if(toc)$
+\tableofcontents
+\newpage
+$endif$
+
+% Main document content
+$body$
+
+% References section if provided
+$if(bibliography)$
+\printbibliography[title=References]
+$endif$
+
+\end{document}
+

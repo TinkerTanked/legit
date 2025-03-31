@@ -1,4 +1,4 @@
-name: Markdown to Scientific PDF
+name: Markdown to Multiple PDF Formats
 
 # This workflow is triggered whenever markdown files are modified in the main branch
 on:
@@ -29,6 +29,16 @@ jobs:
   convert-and-upload:
     name: Convert Markdown to PDF and Upload to S3
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        format: [scientific, academic]
+        include:
+          - format: scientific
+            template: templates/scientific-paper.tex
+            output_dir: pdfs/scientific
+          - format: academic
+            template: templates/academic-paper.tex
+            output_dir: pdfs/academic
     container:
       image: pandoc/latex:latest-ubuntu
       options: --user root
@@ -53,14 +63,14 @@ jobs:
             chmod +x /usr/local/bin/yq
             
             # Set environment variables from config
-            echo "OUTPUT_DIR=$(yq '.output_directory // "pdfs"' configs/workflow-config.yml)" >> $GITHUB_ENV
-            echo "TEMPLATE_FILE=$(yq '.template_file // "templates/scientific-paper.tex"' configs/workflow-config.yml)" >> $GITHUB_ENV
+            echo "OUTPUT_DIR=$(yq '.output_directory.${{ matrix.format }} // "${{ matrix.output_dir }}"' configs/workflow-config.yml)" >> $GITHUB_ENV
+            echo "TEMPLATE_FILE=$(yq '.template_file.${{ matrix.format }} // "${{ matrix.template }}"' configs/workflow-config.yml)" >> $GITHUB_ENV
             echo "DEFAULT_AUTHOR=$(yq '.default_author // ""' configs/workflow-config.yml)" >> $GITHUB_ENV
             echo "PDF_ENGINE=$(yq '.pdf_engine // "xelatex"' configs/workflow-config.yml)" >> $GITHUB_ENV
           else
             echo "No configuration file found. Using default settings."
-            echo "OUTPUT_DIR=pdfs" >> $GITHUB_ENV
-            echo "TEMPLATE_FILE=templates/scientific-paper.tex" >> $GITHUB_ENV
+            echo "OUTPUT_DIR=${{ matrix.output_dir }}" >> $GITHUB_ENV
+            echo "TEMPLATE_FILE=${{ matrix.template }}" >> $GITHUB_ENV
             echo "DEFAULT_AUTHOR=" >> $GITHUB_ENV
             echo "PDF_ENGINE=xelatex" >> $GITHUB_ENV
           fi
@@ -157,13 +167,14 @@ jobs:
                 mv "${{ env.TEMPLATE_FILE }}.temp" "${{ env.TEMPLATE_FILE }}"
               fi
               
-              # Convert using pandoc with the scientific template
+              # Convert using pandoc with the template for current format (${{ matrix.format }})
               pandoc -s "$md_file" \
                 --pdf-engine=${{ env.PDF_ENGINE }} \
                 --template="${{ env.TEMPLATE_FILE }}" \
                 -V title="${title:-Untitled}" \
                 -V author="${author:-}" \
                 -V date="${date}" \
+                -V format="${{ matrix.format }}" \
                 -V graphics=true \
                 -V linkcolor=blue \
                 -V geometry:margin=1in \
@@ -188,15 +199,15 @@ jobs:
           TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S")
           
           # Upload all generated PDFs to S3
-          for pdf_file in pdfs/*.pdf; do
+          for pdf_file in ${{ env.OUTPUT_DIR }}/*.pdf; do
             if [ -f "$pdf_file" ]; then
               filename=$(basename "$pdf_file")
               
-              # Upload to a versioned directory structure
-              aws s3 cp "$pdf_file" "s3://${{ secrets.S3_BUCKET }}/papers/$TIMESTAMP/$filename"
+              # Upload to a versioned directory structure with format subfolder
+              aws s3 cp "$pdf_file" "s3://${{ secrets.S3_BUCKET }}/papers/$TIMESTAMP/${{ matrix.format }}/$filename"
               
               # Also upload to latest directory (overwriting previous version)
-              aws s3 cp "$pdf_file" "s3://${{ secrets.S3_BUCKET }}/papers/latest/$filename"
+              aws s3 cp "$pdf_file" "s3://${{ secrets.S3_BUCKET }}/papers/latest/${{ matrix.format }}/$filename"
               
               echo "Uploaded $filename to S3 bucket ${{ secrets.S3_BUCKET }}"
             fi
@@ -204,17 +215,32 @@ jobs:
       
       # Step C: Generate and upload index file (optional)
       - name: Generate index of all PDFs
+        if: matrix.format == 'scientific'  # Only generate index once
         run: |
+          mkdir -p pdfs
           echo "# Available PDFs" > pdfs/index.md
           echo "" >> pdfs/index.md
           echo "Last updated: $(date)" >> pdfs/index.md
           echo "" >> pdfs/index.md
           
-          for pdf_file in pdfs/*.pdf; do
+          echo "## Scientific Format" >> pdfs/index.md
+          echo "" >> pdfs/index.md
+          for pdf_file in pdfs/scientific/*.pdf; do
             if [ -f "$pdf_file" ]; then
               filename=$(basename "$pdf_file")
               base_name="${filename%.pdf}"
-              echo "* [$base_name](https://${{ secrets.S3_BUCKET }}.s3.amazonaws.com/papers/latest/$filename)" >> pdfs/index.md
+              echo "* [$base_name](https://${{ secrets.S3_BUCKET }}.s3.amazonaws.com/papers/latest/scientific/$filename)" >> pdfs/index.md
+            fi
+          done
+          
+          echo "" >> pdfs/index.md
+          echo "## Academic Format" >> pdfs/index.md
+          echo "" >> pdfs/index.md
+          for pdf_file in pdfs/academic/*.pdf; do
+            if [ -f "$pdf_file" ]; then
+              filename=$(basename "$pdf_file")
+              base_name="${filename%.pdf}"
+              echo "* [$base_name](https://${{ secrets.S3_BUCKET }}.s3.amazonaws.com/papers/latest/academic/$filename)" >> pdfs/index.md
             fi
           done
           
@@ -223,4 +249,13 @@ jobs:
           
           # Upload index to S3
           aws s3 cp pdfs/index.html "s3://${{ secrets.S3_BUCKET }}/papers/index.html" --content-type "text/html"
+          
+          # Create a simple JSON file with metadata about available formats
+          cat > pdfs/formats.json << EOF
+{
+  "available_formats": ["scientific", "academic"],
+  "last_updated": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+}
+EOF
+          aws s3 cp pdfs/formats.json "s3://${{ secrets.S3_BUCKET }}/papers/formats.json" --content-type "application/json"
 
