@@ -369,6 +369,4 @@ main() {
   log_info "Script execution completed"
 }
 
-# Execute main function
-main "$@"
 
