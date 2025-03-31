@@ -95,7 +95,7 @@ jobs:
             babel latexmk fancyhdr \
             footnotehyper caption \
             pdflscape pdfpages \
-            fontspec xltxtra realscripts \
+            fontspec realscripts \
             titlesec
       
       # Step 6: Find all markdown files (if not manually specified)
