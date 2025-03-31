@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Title and labels -->
+  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold">Quantum Entanglement Fidelity Measurements</text>
+  <text x="400" y="480" font-family="Arial" font-size="18" text-anchor="middle">Measurement Time (μs)</text>
+  <text x="30" y="250" font-family="Arial" font-size="18" text-anchor="middle" transform="rotate(-90, 30, 250)">Entanglement Fidelity</text>
+  
+  <!-- Graph background and grid -->
+  <rect x="80" y="70" width="680" height="370" fill="#f8f8f8" stroke="#cccccc" stroke-width="1" />
+  
+  <!-- Grid lines vertical -->
+  <line x1="136" y1="70" x2="136" y2="440" stroke="#dddddd" stroke-width="1" />
+  <line x1="248" y1="70" x2="248" y2="440" stroke="#dddddd" stroke-width="1" />
+  <line x1="360" y1="70" x2="360" y2="440" stroke="#dddddd" stroke-width="1" />
+  <line x1="472" y1="70" x2="472" y2="440" stroke="#dddddd" stroke-width="1" />
+  <line x1="584" y1="70" x2="584" y2="440" stroke="#dddddd" stroke-width="1" />
+  <line x1="696" y1="70" x2="696" y2="440" stroke="#dddddd" stroke-width="1" />
+  
+  <!-- Grid lines horizontal -->
+  <line x1="80" y1="142" x2="760" y2="142" stroke="#dddddd" stroke-width="1" />
+  <line x1="80" y1="214" x2="760" y2="214" stroke="#dddddd" stroke-width="1" />
+  <line x1="80" y1="286" x2="760" y2="286" stroke="#dddddd" stroke-width="1" />
+  <line x1="80" y1="358" x2="760" y2="358" stroke="#dddddd" stroke-width="1" />
+  
+  <!-- Axes -->
+  <line x1="80" y1="440" x2="760" y2="440" stroke="#000000" stroke-width="2" />
+  <line x1="80" y1="70" x2="80" y2="440" stroke="#000000" stroke-width="2" />
+  
+  <!-- X-axis labels -->
+  <text x="80" y="460" font-family="Arial" font-size="14" text-anchor="middle">0</text>
+  <text x="136" y="460" font-family="Arial" font-size="14" text-anchor="middle">50</text>
+  <text x="248" y="460" font-family="Arial" font-size="14" text-anchor="middle">100</text>
+  <text x="360" y="460" font-family="Arial" font-size="14" text-anchor="middle">150</text>
+  <text x="472" y="460" font-family="Arial" font-size="14" text-anchor="middle">200</text>
+  <text x="584" y="460" font-family="Arial" font-size="14" text-anchor="middle">250</text>
+  <text x="696" y="460" font-family="Arial" font-size="14" text-anchor="middle">300</text>
+  
+  <!-- Y-axis labels -->
+  <text x="70" y="440" font-family="Arial" font-size="14" text-anchor="end">0.0</text>
+  <text x="70" y="358" font-family="Arial" font-size="14" text-anchor="end">0.25</text>
+  <text x="70" y="286" font-family="Arial" font-size="14" text-anchor="end">0.50</text>
+  <text x="70" y="214" font-family="Arial" font-size="14" text-anchor="end">0.75</text>
+  <text x="70" y="142" font-family="Arial" font-size="14" text-anchor="end">1.00</text>
+  <text x="70" y="70" font-family="Arial" font-size="14" text-anchor="end">1.25</text>
+  
+  <!-- First data set - Bell state fidelity -->
+  <polyline points="
+    80,142
+    105,147
+    130,155
+    155,166
+    180,173
+    205,184
+    230,198
+    255,208
+    280,219
+    305,227
+    330,239
+    355,249
+    380,262
+    405,273
+    430,286
+    455,304
+    480,312
+    505,328
+    530,341
+    555,354
+    580,372
+    605,387
+    630,403
+    655,415
+    680,432
+    705,451
+  " fill="none" stroke="#d62728" stroke-width="3" />
+  
+  <!-- Error bars for first data set (vertical lines with cross caps) -->
+  <line x1="105" y1="137" x2="105" y2="157" stroke="#d62728" stroke-width="1.5" />
+  <line x1="101" y1="137" x2="109" y2="137" stroke="#d62728" stroke-width="1.5" />
+  <line x1="101" y1="157" x2="109" y2="157" stroke="#d62728" stroke-width="1.5" />
+  
+  <line x1="205" y1="174" x2="205" y2="194" stroke="#d62728" stroke-width="1.5" />
+  <line x1="201" y1="174" x2="209" y2="174" stroke="#d62728" stroke-width="1.5" />
+  <line x1="201" y1="194" x2="209" y2="194" stroke="#d62728" stroke-width="1.5" />
+  
+  <line x1="305" y1="217" x2="305" y2="237" stroke="#d62728" stroke-width="1.5" />
+  <line x1="301" y1="217" x2="309" y2="217" stroke="#d62728" stroke-width="1.5" />
+  <line x1="301" y1="237" x2="309" y2="237" stroke="#d62728" stroke-width="1.5" />
+  
+  <line x1="405" y1="263" x2="405" y2="283" stroke="#d62728" stroke-width="1.5" />
+  <line x1="401" y1="263" x2="409" y2="263" stroke="#d62728" stroke-width="1.5" />
+  <line x1="401" y1="283" x2="409" y2="283" stroke="#d62728" stroke-width="1.5" />
+  
+  <line x1="505" y1="318" x2="505" y2="338" stroke="#d62728" stroke-width="1.5" />
+  <line x1="501" y1="318" x2="509" y2="318" stroke="#d62728" stroke-width="1.5" />
+  <line x1="501" y1="338" x2="509" y2="338" stroke="#d62728" stroke-width="1.5" />
+  
+  <line x1="605" y1="377" x2="605" y2="397" stroke="#d62728" stroke-width="1.5" />
+  <line x1="601" y1="377" x2="609" y2="377" stroke="#d62728" stroke-width="1.5" />
+  <line x1="601" y1="397" x2="609" y2="397" stroke="#d62728" stroke-width="1.5" />
+  
+  <line x1="705" y1="441" x2="705" y2="461" stroke="#d62728" stroke-width="1.5" />
+  <line x1="701" y1="441" x2="709" y2="441" stroke="#d62728" stroke-width="1.5" />
+  <line x1="701" y1="461" x2="709" y2="461" stroke="#d62728" stroke-width="1.5" />
+  
+  <!-- Second data set - Theoretical model -->
+  <polyline points="
+    80,142
+    105,149
+    130,157
+    155,165
+    180,174
+    205,182
+    230,191
+    255,204
+    280,216
+    305,228
+    330,240
+    355,252
+    380,264
+    405,276
+    430,288
+    455,300
+    480,312
+    505,324
+    530,336
+    555,348
+    580,360
+    605,372
+    630,384
+    655,396
+    680,408
+    705,420
+  " fill="none" stroke="#1f77b4" stroke-width="3" stroke-dasharray="6,3" />
+  
+  <!-- Data points for first data set -->
+  <circle cx="105" cy="147" r="5" fill="#d62728" />
+  <circle cx="130" cy="155" r="5" fill="#d62728" />
+  <circle cx="155" cy="166" r="5" fill="#d62728" />
+  <circle cx="180" cy="173" r="5" fill="#d62728" />
+  <circle cx="205" cy="184" r="5" fill="#d62728" />
+  <circle cx="230" cy="198" r="5" fill="#d62728" />
+  <circle cx="255" cy="208" r="5" fill="#d62728" />
+  <circle cx="280" cy="219" r="5" fill="#d62728" />
+  <circle cx="305" cy="227" r="5" fill="#d62728" />
+  <circle cx="330" cy="239" r="5" fill="#d62728" />
+  <circle cx="355" cy="249" r="5" fill="#d62728" />
+  <circle cx="380" cy="262" r="5" fill="#d62728" />
+  <circle cx="405" cy="273" r="5" fill="#d62728" />
+  <circle cx="430" cy="286" r="5" fill="#d62728" />
+  <circle cx="455" cy="304" r="5" fill="#d62728" />
+  <circle cx="480" cy="312" r="5" fill="#d62728" />
+  <circle cx="505" cy="328" r="5" fill="#d62728" />
+  <circle cx="530" cy="341" r="5" fill="#d62728" />
+  <circle cx="555" cy="354" r="5" fill="#d62728" />
+  <circle cx="580" cy="372" r="5" fill="#d62728" />
+  <circle cx="605" cy="387" r="5" fill="#d62728" />
+  <circle cx="630" cy="403" r="5" fill="#d62728" />
+  <circle cx="655" cy="415" r="5" fill="#d62728" />
+  <circle cx="680" cy="432" r="5" fill="#d62728" />
+  <circle cx="705" cy="451" r="5" fill="#d62728" />
+  
+  <!-- Legend -->
+  <rect x="550" y="90" width="180" height="70" fill="white" stroke="#cccccc" stroke-width="1" />
+  <circle cx="580" cy="115" r="5" fill="#d62728" />
+  <line x1="565" y1="115" x2="595" y2="115" stroke="#d62728" stroke-width="3" />
+  <text x="605" y="120" font-family="Arial" font-size="14">Experimental data</text>
+  
+  <line x1="565" y1="145" x2="595" y2="145" stroke="#1f77b4" stroke-width="3" stroke-dasharray="6,3" />
+  <text x="605" y="150" font-family="Arial" font-size="14">Theoretical model</text>
+  
+  <!-- Additional annotations -->
+  <text x="200" y="100" font-family="Arial" font-size="14" fill="#666666">T₂* = 210 ± 15 μs</text>
+  <text x="310" y="320" font-family="Arial" font-style="italic" font-size="14" fill="#666666">Decoherence region</text>
+  <line x1="320" y1="325" x2="400" y2="350" stroke="#666666" stroke-width="1" stroke-dasharray="2,2" />
+</svg>
+

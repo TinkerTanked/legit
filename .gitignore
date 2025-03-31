@@ -1,5 +1,14 @@
-# Generated PDFs
+# Generated output files
 *.pdf
+pdfs/
+output/
+dist/
+build/temp/
+generated/
+
+# Output directory (while keeping the directory itself)
+output/*
+!output/.gitkeep
 
 # LaTeX temporary files
 *.aux
@@ -30,6 +39,32 @@
 latex.out/
 auto/
 
+# BibTeX temporary files
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+
+# Additional LaTeX/scientific paper files
+*.brf
+*.idx
+*.ilg
+*.ind
+*.lol
+*.nav
+*.snm
+*.glo
+*.gls
+*.ist
+*.acn
+*.acr
+*.alg
+
+# Temp build directories
+temp-build/
+_markdown_*/
+.temp-pandoc/
+
 # Node.js dependencies
 node_modules/
 npm-debug.log
@@ -43,10 +78,7 @@ yarn.lock
 *.html
 
 # Build outputs
-dist/
-build/
-output/
-
+# Already covered - dist/ build/ output/
 # OS-specific files
 .DS_Store
 .DS_Store?
@@ -95,3 +127,38 @@ env.bak/
 venv.bak/
 .pytest_cache/
 
+# Project-specific directories (keep the directories, ignore contents)
+templates/*
+!templates/*.tex
+!templates/*.sty
+!templates/README.md
+
+content/*
+!content/*.md
+!content/README.md
+
+figures/*
+!figures/*.svg
+!figures/*.png
+!figures/*.jpg
+!figures/*.jpeg
+!figures/*.pdf
+!figures/README.md
+
+# Cached copies used in workflow
+.cached-template/
+
+# Local test environments
+.direnv/
+.envrc
+
+# Generated index files
+index.html
+index.md
+
+# Pandoc specific
+pandoc-data/
+
+# Workflow debug logs
+workflow-debug.log
+conversion-report.json

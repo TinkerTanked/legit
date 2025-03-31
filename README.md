@@ -10,17 +10,167 @@ Legit makes it easy to write scientific papers in markdown format and automatica
 2. Converts them to PDF using Pandoc and LaTeX with scientific formatting
 3. Uploads the generated PDFs to your S3 bucket
 4. Maintains both versioned copies and "latest" references
+5. Supports both portrait and landscape images with proper formatting
+
+## Repository Structure
+
+The repository is organized into a modular structure for better maintainability:
+
+```
+legit/
+├── .github/workflows/    # GitHub Actions workflow files
+├── configs/              # Configuration files for the workflow
+│   └── workflow-config.yml    # Main configuration settings
+├── content/              # Markdown papers to be converted
+│   └── example-paper.md  # Example scientific paper template
+├── figures/              # Image files for papers
+│   ├── portrait images   # Images in portrait orientation
+│   └── landscape images  # Images in landscape orientation
+├── scripts/              # Utility scripts for the workflow
+│   └── convert-markdown.sh    # Markdown to PDF conversion script
+├── templates/            # LaTeX templates for styling
+│   └── scientific-paper.tex   # Scientific paper LaTeX template
+└── README.md             # This documentation file
+```
+
+## Local Development
+
+To develop and test the PDF generation locally, you'll need to install several dependencies. This section provides installation instructions for different operating systems.
+
+### Required Dependencies
+
+- **Pandoc**: Document conversion system that transforms markdown to LaTeX/PDF
+- **LaTeX**: Typesetting system required for PDF generation
+- **Additional LaTeX packages**: For scientific formatting, math equations, and images
+- **Git**: Version control for repository management
+
+### Installation by Operating System
+
+#### macOS
+
+1. **Pandoc**:
+   ```bash
+   brew install pandoc
+   ```
+
+2. **LaTeX**:
+   ```bash
+   # Full installation (>4GB)
+   brew install --cask mactex
+   
+   # OR Minimal installation (~100MB)
+   brew install --cask basictex
+   
+   # If using BasicTeX, you'll need to install additional packages:
+   sudo tlmgr update --self
+   sudo tlmgr install collection-latex collection-fontsrecommended collection-pictures collection-bibtexextra
+   sudo tlmgr install latexmk fncychap titlesec tabulary varwidth framed wrapfig capt-of needspace xcolor
+   ```
+
+3. **Additional Tools**:
+   ```bash
+   brew install librsvg python imagemagick
+   ```
+
+#### Ubuntu/Debian Linux
+
+1. **Pandoc**:
+   ```bash
+   sudo apt update
+   sudo apt install pandoc
+   ```
+
+2. **LaTeX**:
+   ```bash
+   # Full installation (>4GB)
+   sudo apt install texlive-full
+   
+   # OR Minimal installation (~500MB)
+   sudo apt install texlive texlive-latex-extra texlive-fonts-recommended texlive-science
+   ```
+
+3. **Additional Tools**:
+   ```bash
+   sudo apt install librsvg2-bin python3 imagemagick
+   ```
+
+#### Windows
+
+1. **Pandoc**:
+   - Download the installer from [pandoc.org/installing.html](https://pandoc.org/installing.html)
+   - Run the installer and follow the prompts
+
+2. **LaTeX** (MiKTeX):
+   - Download from [miktex.org/download](https://miktex.org/download)
+   - Run the installer
+   - During setup, choose to automatically install required packages
+
+3. **Additional Tools**:
+   - Install [Git for Windows](https://git-scm.com/download/win)
+   - Install [Python](https://www.python.org/downloads/windows/)
+   - Optionally install [ImageMagick](https://imagemagick.org/script/download.php#windows)
+
+### Testing Locally
+
+Once dependencies are installed, you can test the conversion process:
+
+1. Clone the repository:
+   ```bash
+   git clone git@github.com:TinkerTanked/legit.git
+   cd legit
+   ```
+
+2. Make the conversion script executable (Unix-based systems):
+   ```bash
+   chmod +x scripts/convert-markdown.sh
+   ```
+
+3. Run a test conversion on the example paper:
+   ```bash
+   ./scripts/convert-markdown.sh --input=content/example-paper.md --output-dir=pdfs --template=templates/scientific-paper.tex --engine=xelatex
+   ```
+
+   On Windows (using Git Bash or WSL):
+   ```bash
+   bash scripts/convert-markdown.sh --input=content/example-paper.md --output-dir=pdfs --template=templates/scientific-paper.tex --engine=xelatex
+   ```
+
+4. Verify the PDF was generated in the `pdfs` directory
+
+### Troubleshooting Local Development
+
+#### Common Issues
+
+1. **Missing LaTeX packages**:
+   - Error messages will indicate missing packages
+   - On macOS/Linux: `sudo tlmgr install <package-name>`
+   - On Windows with MiKTeX: The package manager should install them automatically
+
+2. **Pandoc conversion errors**:
+   - Ensure your markdown syntax is compatible with Pandoc
+   - Check LaTeX template for compatibility issues
+   - Run pandoc with the `--verbose` flag for detailed error messages
+
+3. **Image conversion issues**:
+   - Ensure images are in supported formats (PNG, JPEG, SVG)
+   - For SVG support, ensure that librsvg is installed
+   - Verify file paths are correct relative to the markdown file
+
+4. **Line ending issues**:
+   - Scripts may fail with "bad interpreter" errors on Unix systems if they have Windows line endings
+   - Fix with: `tr -d '\r' < scripts/convert-markdown.sh > scripts/fixed.sh && mv scripts/fixed.sh scripts/convert-markdown.sh && chmod +x scripts/convert-markdown.sh`
 
 ## How It Works
 
 The GitHub workflow (`markdown-to-pdf.yml`) performs the following steps:
 
 1. **Trigger**: Activates when markdown files are pushed to the main branch or when manually triggered
-2. **Environment Setup**: Installs Pandoc, LaTeX, and other required dependencies
-3. **Template Application**: Applies a scientific paper LaTeX template to your markdown content
-4. **PDF Generation**: Converts the markdown to a properly formatted PDF using Pandoc
-5. **S3 Upload**: Securely uploads the PDF to your configured S3 bucket
-6. **Versioning**: Creates both timestamped versions and a "latest" version for easy reference
+2. **Configuration Loading**: Reads settings from `configs/workflow-config.yml`
+3. **Environment Setup**: Installs Pandoc, LaTeX, and other required dependencies with caching for efficiency
+4. **Template Application**: Applies the scientific paper LaTeX template from the templates directory
+5. **PDF Generation**: Converts the markdown to a properly formatted PDF using Pandoc
+6. **S3 Upload**: Securely uploads the PDF to your configured S3 bucket
+7. **Versioning**: Creates both timestamped versions and a "latest" version for easy reference
 
 ### Scientific Paper Features
 
@@ -33,6 +183,8 @@ The generated PDFs include proper formatting for:
 - Tables and figures with captions
 - Citations and references
 - Page numbers and headers
+- Both portrait and landscape images with proper orientation
+- Custom styling through configurable templates
 
 ## Configuration Requirements
 
@@ -73,7 +225,8 @@ Example bucket policy for public read access (optional):
 
 ### Creating Markdown Files
 
-Create your scientific paper as a markdown file with YAML frontmatter, for example:
+1. Place your markdown files in the `content/` directory
+2. Create your scientific paper with YAML frontmatter, for example:
 
 ```markdown
 ---
@@ -81,6 +234,8 @@ title: "Your Paper Title"
 author: "Author Name"
 date: "2023-09-22"
 abstract: "This is the abstract of your paper."
+keywords: ["keyword1", "keyword2"]
+bibliography: references.bib
 ---
 
 ## Introduction
@@ -88,7 +243,51 @@ abstract: "This is the abstract of your paper."
 Your content here...
 ```
 
-See the `example-paper.md` file in this repository for a complete example.
+See the `content/example-paper.md` file in this repository for a complete example with advanced features like equations, tables, and citations.
+
+### Adding Images
+
+1. Place your images in the `figures/` directory
+2. Reference images in your markdown with proper paths:
+
+```markdown
+![Caption for portrait image](../figures/ion_trap_setup.svg){width=80%}
+
+![Caption for landscape image](../figures/entanglement_results.svg){width=100% orientation=landscape}
+```
+
+#### Portrait vs. Landscape Images
+
+- **Portrait images**: Standard image inclusion, no special attributes needed
+- **Landscape images**: Add the `orientation=landscape` attribute to properly rotate the image
+
+Example:
+```markdown
+![Landscape Chart](../figures/landscape_chart.svg){width=100% orientation=landscape}
+```
+
+### Configuration
+
+You can customize the workflow by editing the `configs/workflow-config.yml` file:
+
+```yaml
+# Main configuration controls which files to process
+input:
+  content_dir: "content"        # Directory containing markdown files
+  default_files: ["example-paper.md"]  # Default files to process if none specified
+
+# Output settings
+output:
+  pdf_dir: "pdfs"               # Directory for generated PDFs
+  s3:
+    prefix: "papers"            # S3 prefix/folder for uploaded PDFs
+    make_public: true           # Whether to make PDFs publicly accessible
+
+# Template settings
+templates:
+  dir: "templates"              # Directory containing LaTeX templates
+  scientific: "scientific-paper.tex"  # Scientific paper template file
+```
 
 ### Triggering the Workflow
 
@@ -116,20 +315,101 @@ An index of all available PDFs is also generated and available at:
 
 ## Customization
 
+### Template Customization
+
 To customize the PDF formatting:
-1. Modify the LaTeX template in the workflow YAML file
-2. Adjust Pandoc options in the workflow file
-3. Add custom CSS if using HTML as an intermediary step
+
+1. Modify the LaTeX template in `templates/scientific-paper.tex`
+2. Adjust Pandoc options in `scripts/convert-markdown.sh` or `configs/workflow-config.yml`
+3. For advanced users, create custom templates with different styling options
+
+The LaTeX template supports customization of:
+- Font styles and sizes
+- Margin settings
+- Header and footer styles
+- Citation styles
+- Figure and table formatting
+
+### Image Handling
+
+You can control image appearance with markdown attributes:
+
+```markdown
+![Caption](../figures/image.png){width=70% height=auto}
+![Landscape Image](../figures/data.svg){width=100% orientation=landscape}
+![Small Right-aligned Image](../figures/icon.png){width=30% .right}
+```
+
+Supported attributes:
+- `width` and `height`: Control image dimensions (percentage or absolute)
+- `orientation`: Set to `landscape` for landscape images
+- `.left`, `.right`, `.center`: Control image alignment
+
+## Workflow Details
+
+### Environment Setup
+
+The workflow:
+
+1. Uses cached LaTeX and Pandoc installations when possible
+2. Installs only required LaTeX packages for faster setup
+3. Provides detailed logs for debugging
+4. Uses a modular script architecture for maintainability
+
+### Conversion Process
+
+The conversion process:
+
+1. Parses the YAML frontmatter from markdown files
+2. Applies the appropriate LaTeX template
+3. Processes figures with proper orientation handling
+4. Compiles citations if a bibliography is provided
+5. Generates a clean, professionally formatted PDF
 
 ## Troubleshooting
 
 If the workflow fails:
+
 1. Check the GitHub Actions logs for specific error messages
 2. Ensure your AWS credentials are correct and have appropriate permissions
 3. Verify your markdown syntax is compatible with Pandoc
 4. Check that your LaTeX equations are properly formatted
+5. Validate image paths and ensure images exist in the figures directory
+6. Check the configuration file for correct settings
+
+## Advanced Usage
+
+### Creating Multiple Templates
+
+You can create multiple LaTeX templates for different document types:
+
+1. Add new template files to the `templates/` directory
+2. Configure which template to use in your markdown's YAML frontmatter:
+
+```markdown
+---
+title: "Document Title"
+template: "alternative-template.tex"
+---
+```
+
+### Working with References
+
+For proper citations:
+
+1. Create a BibTeX file (e.g., `references.bib`) with your citations
+2. Reference it in your markdown frontmatter
+3. Cite in the paper using `[@citation-key]` format
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+
+Contributions to improve Legit are welcome! Please feel free to submit pull requests with:
+- Template improvements
+- Additional features
+- Documentation enhancements
+- Bug fixes
 

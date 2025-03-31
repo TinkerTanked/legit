@@ -1,0 +1,149 @@
+% Scientific Paper LaTeX Template
+% This template fixes the \tightlist error, supports both portrait and landscape images,
+% and follows best practices for scientific paper formatting.
+
+% ======== DOCUMENT CLASS AND BASIC SETUP ========
+\documentclass[11pt,a4paper,oneside]{article}
+
+% ======== ESSENTIAL PACKAGES ========
+\usepackage[utf8]{inputenc}        % UTF-8 input encoding
+\usepackage[T1]{fontenc}           % Font encoding
+\usepackage{lmodern}               % Latin Modern fonts
+\usepackage{microtype}             % Micro-typographic refinements
+\usepackage{amsmath,amssymb}       % Math symbols and environments
+\usepackage{mathtools}             % Extensions to amsmath
+\usepackage{physics}               % Physics notations
+
+% ======== PAGE LAYOUT ========
+\usepackage[margin=2.5cm]{geometry}  % Page margins
+\usepackage{setspace}              % Line spacing
+\onehalfspacing                    % 1.5 line spacing
+
+% ======== HEADERS AND FOOTERS ========
+\usepackage{fancyhdr}              % Header/footer control
+\pagestyle{fancy}
+\fancyhf{}                         % Clear all headers/footers
+\fancyhead[L]{\leftmark}           % Section in left header
+\fancyhead[R]{\thepage}            % Page number in right header
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ======== GRAPHICS AND TABLES ========
+\usepackage{graphicx}              % Include graphics
+\usepackage{adjustbox}             % Adjust box properties
+\usepackage{rotating}              % Rotate floats
+\usepackage{pdflscape}             % Landscape orientation support
+\usepackage{float}                 % Improved float control
+\usepackage{booktabs}              % Professional tables
+\usepackage{array}                 % Extended tabular environments
+\usepackage{multirow}              % Multiple rows in tables
+\usepackage{tabularx}              % Tables with auto column width
+\usepackage{threeparttable}        % Tables with footnotes
+
+% ======== HYPERLINKS AND REFERENCES ========
+\usepackage[colorlinks=true,
+            linkcolor=blue,
+            citecolor=blue,
+            urlcolor=blue]{hyperref} % Hyperlinks
+\usepackage{cleveref}              % Intelligent cross-references
+
+% ======== BIBLIOGRAPHY ========
+\usepackage[backend=biber,         % Biber backend
+            style=numeric,         % Numeric citation style
+            sorting=none,          % Order of appearance
+            giveninits=true]{biblatex} % Bibliography management 
+
+% ======== CODE AND ALGORITHMS ========
+\usepackage{listings}              % Code listings
+\usepackage{algorithm}             % Algorithm environment
+\usepackage{algpseudocode}         % Pseudocode in algorithms
+
+% ======== COLORS ========
+\usepackage{xcolor}                % Color support
+
+% ======== CAPTIONS ========
+\usepackage[font=small,
+            labelfont=bf,
+            labelsep=period,
+            justification=justified]{caption} % Caption styling
+
+% ======== FIX FOR TIGHTLIST ERROR ========
+% Define \tightlist to do nothing, which fixes the error
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% ======== CUSTOM COMMANDS ========
+% For landscape figures
+\newcommand{\landscapefigure}[4]{%
+  % Parameters:
+  % #1: label
+  % #2: caption
+  % #3: width (e.g., 0.9\linewidth)
+  % #4: image path
+  \begin{landscape}
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=#3]{#4}
+      \caption{#2}
+      \label{#1}
+    \end{figure}
+  \end{landscape}
+}
+
+% For portrait figures
+\newcommand{\portraitfigure}[4]{%
+  % Parameters:
+  % #1: label
+  % #2: caption
+  % #3: width (e.g., 0.8\linewidth)
+  % #4: image path
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=#3]{#4}
+    \caption{#2}
+    \label{#1}
+  \end{figure}
+}
+
+% ======== DOCUMENT METADATA ========
+% These fields can be set from Pandoc variables
+$if(title)$
+\title{$title$}
+$else$
+\title{Untitled Document}
+$endif$
+
+$if(author)$
+\author{$author$}
+$else$
+\author{}
+$endif$
+
+$if(date)$
+\date{$date$}
+$else$
+\date{\today}
+$endif$
+
+% ======== DOCUMENT START ========
+\begin{document}
+
+% ======== TITLE PAGE ========
+\maketitle
+
+% ======== ABSTRACT ========
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+
+% ======== MAIN CONTENT ========
+$body$
+
+% ======== BIBLIOGRAPHY ========
+$if(bibliography)$
+\printbibliography[title=References]
+$endif$
+
+\end{document}
+

@@ -5,6 +5,14 @@ date: "2023-07-15"
 abstract: "This paper presents a novel approach to quantum entanglement in multi-dimensional Hilbert spaces. We explore the implications of Bell's inequality violations in higher dimensions and propose a new mathematical framework for describing entanglement entropy across multiple quantum systems. Our results suggest that entanglement can be maintained over greater distances than previously thought when considering higher-dimensional quantum states. Experimental validation with ion traps demonstrates the practical applications of this theoretical advance."
 keywords: [quantum entanglement, Hilbert spaces, Bell's inequality, quantum information theory]
 bibliography: references.bib
+institute: "Quantum Research Institute"
+header-includes:
+  - \usepackage{graphicx}
+  - \usepackage{rotating}
+  - \usepackage{float}
+geometry: margin=1in
+fontsize: 11pt
+linestretch: 1.15
 ---
 
 # Introduction
@@ -43,7 +51,7 @@ where $I_d$ represents a suitable combination of correlation functions for measu
 
 We used a linear ion trap with $^{40}$Ca$^+$ ions to prepare and measure entangled states in dimensions $d = 2, 3, 4$. The experimental setup is shown in Figure 1.
 
-![Linear ion trap setup used for preparing high-dimensional entangled states. The trap consists of four gold-plated electrodes with RF and DC voltages applied as indicated.](figures/ion_trap_setup.png){#fig:iontrap}
+![Linear ion trap setup used for preparing high-dimensional entangled states. The trap consists of four gold-plated electrodes with RF and DC voltages applied as indicated.](../figures/ion_trap_setup.svg){#fig:iontrap .portrait}
 
 Entangled states were prepared using a sequence of laser pulses:
 
@@ -71,11 +79,13 @@ We achieved state fidelities exceeding 0.98 for $d=2$, 0.95 for $d=3$, and 0.91 
 
 Our measurements show violations of the generalized Bell inequalities with statistical significance exceeding 15 standard deviations. Figure 2 shows the measured values of $I_d$ compared to the classical bound.
 
+![Experimental results showing the violation of Bell inequalities in higher dimensions. The x-axis represents the Hilbert space dimension d, while the y-axis shows the measured Bell parameter $I_d$. The dashed line indicates the classical bound, while data points represent experimental measurements with error bars indicating statistical uncertainty.](../figures/entanglement_results.svg){#fig:bellresults .landscape}
+
 The experimental values approach the quantum limit:
 
 $$I_d^{QM} = 2d\sin\left(\frac{\pi}{4d}\right)$$
 
-This confirms the non-local nature of quantum entanglement in higher dimensions.
+As clearly demonstrated in Figure \ref{fig:bellresults}, our results confirm the non-local nature of quantum entanglement in higher dimensions.
 
 ## Entanglement Preservation
 
@@ -94,12 +104,31 @@ Future work will focus on:
 1. Extending to even higher dimensions ($d > 10$)
 2. Implementing high-dimensional quantum communication protocols
 3. Exploring topological protection of higher-dimensional entangled states
+4. Further refinement of the experimental apparatus shown in Figure \ref{fig:iontrap}
 
 These advances may lead to practical quantum repeaters and eventually a quantum internet based on higher-dimensional quantum systems.
 
 # Acknowledgments
 
-This work was supported by the National Science Foundation under Grant No. QIS-1234567. We thank Prof. Alice Quantum for helpful discussions and Dr. Bob Superposition for assistance with the experimental apparatus.
+This work was supported by the National Science Foundation under Grant No. QIS-1234567. We thank Prof. Alice Quantum for helpful discussions and Dr. Bob Superposition for assistance with the experimental apparatus shown in Figure \ref{fig:iontrap}. The entanglement measurements presented in Figure \ref{fig:bellresults} were made possible by advanced quantum state tomography software developed by the Quantum Networks Collaboration.
+
+# Figure Formatting Notes
+
+This paper demonstrates two approaches to figure orientation:
+
+1. **Portrait figures** (like Figure \ref{fig:iontrap}): These are standard figures that maintain the default page orientation. They work well for tall diagrams, apparatus setups, and conceptual illustrations. In the markdown, they are formatted with the `.portrait` class:
+
+```markdown
+![Caption](../figures/ion_trap_setup.svg){#fig:iontrap .portrait}
+```
+
+2. **Landscape figures** (like Figure \ref{fig:bellresults}): These figures are rotated 90 degrees to accommodate wide data visualizations, such as complex charts or comparative graphs. In the markdown, they are formatted with the `.landscape` class:
+
+```markdown
+![Caption](../figures/entanglement_results.svg){#fig:bellresults .landscape}
+```
+
+The LaTeX template automatically processes these classes and applies the appropriate formatting.
 
 # References
 
