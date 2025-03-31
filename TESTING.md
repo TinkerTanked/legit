@@ -1,6 +1,6 @@
 # Testing Guide for Legit
 
-This document outlines the testing infrastructure for the Legit markdown-to-PDF conversion system.
+This document outlines the testing infrastructure for the Legit Markdown-to-PDF Atomic Interpreter.
 
 ## Overview
 
