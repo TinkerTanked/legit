@@ -189,7 +189,8 @@ process_metadata() {
   fi
   
   log_info "Metadata: Title='$TITLE', Author='$AUTHOR', Date='$DATE'"
-}\n
+}
+
 # Function: convert_svg_to_pdf
 # Description: Converts SVG files to PDF for LaTeX inclusion
 convert_svg_to_pdf() {
@@ -369,4 +370,6 @@ main() {
   log_info "Script execution completed"
 }
 
+# Execute main function
+main "$@"
 
