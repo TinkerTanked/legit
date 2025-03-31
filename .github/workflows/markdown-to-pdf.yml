@@ -200,7 +200,7 @@ jobs:
                 -V graphics=true \
                 -V linkcolor=blue \
                 -V geometry:margin=1in \
-                --lua-filter=scripts/landscape-filter.lua \
+                --lua-filter=scripts/image-orientation-filter.lua \
                 -o "$output_pdf" || echo "::warning::Failed to convert $md_file"
             done
           fi
