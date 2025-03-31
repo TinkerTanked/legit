@@ -502,6 +502,28 @@ If the workflow fails:
 5. Validate image paths and ensure images exist in the figures directory
 6. Check the configuration file for correct settings
 
+## Testing
+
+Legit includes a comprehensive test suite to ensure the system works correctly. The test suite validates:
+
+- Markdown to PDF conversion
+- SVG image handling
+- Multi-format template processing
+- Command-line functionality
+
+### Running Tests
+
+To run the test suite locally:
+
+```bash
+# Run all tests
+./tests/run-tests.sh
+```
+
+Tests run automatically on every pull request and push to the main branch via GitHub Actions.
+
+For detailed information about the testing system, see [TESTING.md](TESTING.md).
+
 ## Advanced Usage
 ### Using Different Format Templates
 

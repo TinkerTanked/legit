@@ -147,3 +147,4 @@ return {
   { Meta = determine_template },
   { Image = Image }
 }
+
