@@ -93,7 +93,7 @@ jobs:
 
           # Install LaTeX packages
           tlmgr update --self
-          tlmgr install mathtools
+          tlmgr install mathtools physics algorithms algorithmicx algorithm2e
           
       # Verify Pandoc and LaTeX are pre-installed
       - name: Verify pre-installed tools

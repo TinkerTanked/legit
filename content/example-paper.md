@@ -29,6 +29,7 @@ header-includes:
   - \usepackage{mathtools}
   - \usepackage{tcolorbox}
   - \usepackage{booktabs}
+  - \usepackage{physics}
 journal: "Journal of Quantum Information"
 volume: 42
 issue: 3
