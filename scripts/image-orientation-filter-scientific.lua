@@ -1,5 +1,5 @@
 --[[
-Image Orientation Filter for Pandoc (Scientific Format)
+Simplified Image Orientation Filter for Pandoc (Scientific Format)
 
 This filter detects the orientation of images (landscape or portrait) from their attributes
 and transforms them into the appropriate LaTeX commands for scientific template.
@@ -7,6 +7,8 @@ and transforms them into the appropriate LaTeX commands for scientific template.
 The filter ONLY supports scientific template format:
   \landscapefigure{label}{caption}{width}{path}
   \portraitfigure{label}{caption}{width}{path}
+
+This simplified version ALWAYS returns a block element for any image with an orientation attribute.
 
 Usage: Add orientation="landscape" or orientation="portrait" to your image attributes.
 Example: ![Caption](image.png){#fig:id orientation="landscape"}
@@ -30,39 +32,49 @@ end
 -- Function to escape special characters in LaTeX paths
 local function escape_latex_path(path)
   -- Escape LaTeX special characters
-  local escaped = path:gsub("([#$%%&_{}^~\\])", "\\%1")
-  
-  -- For hash-based filenames, add extra protection with braces
-  if escaped:match("%x%x%x%x%x%x+") then
-    escaped = "{" .. escaped .. "}"
-  end
-  
+  local escaped = path:gsub("([#$%&_{}^~\\])", "\\%1")
   return escaped
 end
 
--- Function to handle scientific template figures
-local function format_scientific_figure(id, caption, width, path, is_landscape)
-  local latex_cmd = is_landscape and "\\landscapefigure" or "\\portraitfigure"
-  local label = id and id or get_filename(path):gsub("%.%w+$", "")
+-- Extract text from a caption (simplified approach)
+local function extract_caption_text(caption)
+  if caption == nil then
+    return ""
+  end
   
-  -- Scientific template order: {label}{caption}{width}{path}
-  local latex_code = string.format(
-    "%s{%s}{%s}{%s}{%s}",
-    latex_cmd,
-    label,
-    caption,
-    width,
-    escape_latex_path(path)
-  )
+  if type(caption) == "string" then
+    return caption
+  end
   
-  debug("Scientific format: " .. latex_code)
-  return latex_code
+  -- Try to extract from Pandoc's Inlines
+  if type(caption) == "table" then
+    -- Simple approach: just join any text we find
+    local texts = {}
+    local traverse
+    traverse = function(tbl)
+      if tbl.text then
+        table.insert(texts, tbl.text)
+      elseif type(tbl) == "table" then
+        for _, v in ipairs(tbl) do
+          if type(v) == "table" then
+            traverse(v)
+          elseif type(v) == "string" then
+            table.insert(texts, v)
+          end
+        end
+      end
+    end
+    traverse(caption)
+    return table.concat(texts, " ")
+  end
+  
+  return ""
 end
 
 -- Main filter function for images
 local function image_filter(elem)
-  -- Check if image has orientation attribute
-  local orientation = elem.attributes["orientation"]
+  -- Only process images that have an orientation attribute
+  local orientation = elem.attributes and elem.attributes["orientation"]
   if not orientation then
     debug("No orientation specified for image: " .. elem.src)
     return nil -- No changes to image
@@ -70,64 +82,34 @@ local function image_filter(elem)
   
   -- Determine if landscape or portrait
   local is_landscape = orientation:lower() == "landscape"
+  local latex_cmd = is_landscape and "\\landscapefigure" or "\\portraitfigure"
   debug("Image orientation: " .. orientation)
   
   -- Extract image information
   local path = elem.src
-  
-  -- Safer caption extraction with multiple fallback methods
-  local caption = ""
-  if elem.caption then
-    if type(elem.caption) == "string" then
-      caption = elem.caption
-    elseif pandoc.utils and pandoc.utils.stringify then
-      -- Use pandoc.utils.stringify if available
-      caption = pandoc.utils.stringify(elem.caption)
-    else
-      -- Fallback method - try to extract from a table
-      if type(elem.caption) == "table" then
-        if elem.caption[1] and elem.caption[1].text then
-          caption = elem.caption[1].text
-        end
-      end
-    end
-  end
-  
+  local caption_text = extract_caption_text(elem.caption)
   local width = elem.attributes.width or "\\linewidth"
-  local id = elem.identifier ~= "" and elem.identifier or nil
+  local id = elem.identifier ~= "" and elem.identifier or get_filename(path):gsub("%.%w+$", "")
   
   debug("Image path: " .. path)
-  debug("Caption: " .. caption)
+  debug("Caption: " .. caption_text)
   debug("Width: " .. width)
-  debug("ID: " .. (id or "none"))
+  debug("ID: " .. id)
   
-  -- Scientific format only
-  local latex_code = format_scientific_figure(id, caption, width, path, is_landscape)
+  -- Format LaTeX code (scientific format): {label}{caption}{width}{path}
+  local latex_code = string.format(
+    "%s{%s}{%s}{%s}{%s}",
+    latex_cmd,
+    id,
+    caption_text,
+    width,
+    escape_latex_path(path)
+  )
   
-  -- Return raw LaTeX
-  -- Check if image is inline or block
-  local isInline = false
+  debug("Scientific format latex: " .. latex_code)
   
-  -- Safer parent element check
-  if elem.parent then
-    if elem.parent.t == "Para" and #elem.parent.content == 1 then
-      -- Single image in a paragraph - treat as block
-      isInline = false
-    elseif elem.parent.t == "Para" then
-      -- Image within text in a paragraph - treat as inline
-      isInline = true
-    end
-  end
-  
-  debug("Image is " .. (isInline and "inline" or "block"))
-  
-  if isInline then
-    debug("Returning RawInline")
-    return pandoc.RawInline("latex", latex_code)
-  else
-    debug("Returning RawBlock")
-    return pandoc.RawBlock("latex", latex_code)
-  end
+  -- ALWAYS return as a block element, never inline
+  return pandoc.RawBlock("latex", latex_code)
 end
 
 -- Return the filter
@@ -136,4 +118,3 @@ return {
     Image = image_filter
   }
 }
-
