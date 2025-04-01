@@ -35,7 +35,9 @@ jobs:
       
       # Step 3: Set up Docker Buildx
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
       
       # Step 4: Configure AWS credentials
       - name: Configure AWS credentials
@@ -53,9 +55,9 @@ jobs:
       # Step 6: Extract metadata for Docker
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/legit:${{ github.sha }}
+          images: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/legit
           tags: |
             type=raw,value=latest
             type=sha,format=short
@@ -63,10 +65,10 @@ jobs:
       
       # Step 7: Build and push Docker image to ECR
       - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile
+          file: .github/workflows/arm64-container
           platforms: linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -74,7 +76,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Step 8: Output image URI for reference
+      # Step 8: Image URI 
       - name: Image URI
         run: |
           echo "Image URI: ${{ steps.meta.outputs.tags }}"
