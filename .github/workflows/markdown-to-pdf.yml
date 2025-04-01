@@ -120,6 +120,19 @@ jobs:
           echo "LaTeX version: $(pdflatex --version | head -n 1)"
           echo "XeLaTeX version: $(xelatex --version | head -n 1)"
       
+      # Step 5: Prepare format-specific workspace to avoid collisions
+      - name: Prepare format-specific workspace
+        run: |
+          echo "Creating format-specific working directory and Lua filter for ${{ matrix.format }} format"
+          
+          # Create format-specific working directory
+          mkdir -p workdir-${{ matrix.format }}
+          
+          # Create format-specific copy of the Lua filter
+          cp scripts/image-orientation-filter.lua scripts/image-orientation-filter-${{ matrix.format }}.lua
+          
+          echo "Format-specific workspace prepared for ${{ matrix.format }} format"
+      
       # Step 6: Find all markdown files (if not manually specified)
       - name: Find markdown files
         id: find-markdown
@@ -163,7 +176,8 @@ jobs:
                 --output-dir="${{ env.OUTPUT_DIR }}" \
                 --template="${{ env.TEMPLATE_FILE }}" \
                 --engine="${{ env.PDF_ENGINE }}" \
-                --default-author="${{ env.DEFAULT_AUTHOR }}"
+                --default-author="${{ env.DEFAULT_AUTHOR }}" \
+                --format="${{ matrix.format }}"
             done
           else
             echo "No conversion script found. Using integrated conversion."
@@ -200,7 +214,7 @@ jobs:
                 -V graphics=true \
                 -V linkcolor=blue \
                 -V geometry:margin=1in \
-                --lua-filter=scripts/image-orientation-filter.lua \
+                --lua-filter=scripts/image-orientation-filter-${{ matrix.format }}.lua \
                 -o "$output_pdf" || echo "::warning::Failed to convert $md_file"
             done
           fi
@@ -274,9 +288,11 @@ jobs:
           
           # Create a simple JSON file with metadata about available formats
           cat > pdfs/formats.json << EOF
-
-          "available_formats": ["scientific", "academic"],
-          "last_updated": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-
+          {
+            "available_formats": ["scientific", "academic"],
+            "last_updated": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          }
+          EOF
+          
           aws s3 cp pdfs/formats.json "s3://${{ secrets.S3_BUCKET }}/papers/formats.json" --content-type "application/json"
 

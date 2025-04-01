@@ -23,6 +23,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 CONFIG_FILE="$PROJECT_ROOT/configs/workflow-config.yml"
 DEFAULT_TEMPLATE="$PROJECT_ROOT/templates/scientific-paper.tex"
+DEFAULT_FORMAT="scientific"  # Default format if not specified
 LOG_FILE="$PROJECT_ROOT/conversion.log"
 
 # ============================================================================
@@ -127,15 +128,24 @@ get_config_value() {
 
 # Function: load_config
 # Description: Loads configuration values from the YAML file
+# Arguments:
+#   $1: Optional format (scientific, academic, etc.)
 load_config() {
-  log_info "Loading configuration from $CONFIG_FILE"
+  local format="${1:-$FORMAT}"
+  log_info "Loading configuration from $CONFIG_FILE with format: $format"
   
   # Input/Output settings
   INPUT_DIR=$(get_config_value "input_directory" "content")
   OUTPUT_DIR=$(get_config_value "output_directory" "pdfs")
   
-  # Template settings
-  TEMPLATE_FILE=$(get_config_value "template_file" "$DEFAULT_TEMPLATE")
+  # Template settings based on format
+  if [ "$format" = "academic" ]; then
+    TEMPLATE_FILE=$(get_config_value "academic_template_file" "$PROJECT_ROOT/templates/academic-paper.tex")
+  else
+    TEMPLATE_FILE=$(get_config_value "template_file" "$DEFAULT_TEMPLATE")
+  fi
+  
+  log_info "Using template: $TEMPLATE_FILE"
   
   # Image settings
   IMAGES_DIR=$(get_config_value "images_directory" "figures")
@@ -297,17 +307,17 @@ convert_svg_to_pdf() {
 }
 
 # Function: convert_markdown_to_pdf
-
-# Function: convert_markdown_to_pdf
 # Description: Converts a markdown file to PDF using Pandoc
 # Arguments:
 #   $1: Markdown file path
+#   $2: Optional format (scientific, academic, etc.)
 convert_markdown_to_pdf() {
   local md_file="$1"
+  local format="${2:-$FORMAT}"
   local md_filename=$(basename "$md_file")
   local output_file="$PROJECT_ROOT/$OUTPUT_DIR/${md_filename%.md}.pdf"
   
-  log_info "Converting $md_file to $output_file"
+  log_info "Converting $md_file to $output_file with format: $format"
   
   # Process metadata from the markdown file
   process_metadata "$md_file"
@@ -325,6 +335,23 @@ convert_markdown_to_pdf() {
     reference_option="--reference-doc=$PROJECT_ROOT/$reference_doc"
   fi
   
+  # Configure format-specific Lua filter
+  local lua_filter_option=""
+  local lua_filter_path="$SCRIPT_DIR/image-orientation-filter.lua"
+  
+  # Use format-specific filter if it exists
+  local format_specific_filter="$SCRIPT_DIR/image-orientation-filter-${format}.lua"
+  if [ -f "$format_specific_filter" ]; then
+    lua_filter_path="$format_specific_filter"
+  fi
+  
+  if [ -f "$lua_filter_path" ]; then
+    lua_filter_option="--lua-filter=$lua_filter_path"
+    log_info "Using Lua filter: $lua_filter_path"
+  else
+    log_warning "Lua filter not found: $lua_filter_path"
+  fi
+  
   # Execute pandoc conversion
   log_info "Running pandoc conversion..."
   
@@ -337,6 +364,7 @@ convert_markdown_to_pdf() {
        -V author="$AUTHOR" \
        -V date="$DATE" \
        $reference_option \
+       $lua_filter_option \
        $extra_options \
        -o "$output_file"; then
     log_error "Pandoc conversion failed for $md_file"
@@ -349,7 +377,7 @@ convert_markdown_to_pdf() {
       --resource-path="$PROJECT_ROOT" \
       -V title="$TITLE" \
       -V author="$AUTHOR" \
-      -o "$tex_output" $reference_option $extra_options
+      -o "$tex_output" $reference_option $lua_filter_option $extra_options
       
     log_info "Created LaTeX file for debugging: $tex_output"
     log_info "Checking image references in LaTeX:"
@@ -363,8 +391,11 @@ convert_markdown_to_pdf() {
 
 # Function: process_files
 # Description: Processes all markdown files according to configuration
+# Arguments:
+#   $1: Optional format (scientific, academic, etc.)
 process_files() {
-  log_info "Starting file processing"
+  local format="${1:-$FORMAT}"
+  log_info "Starting file processing with format: $format"
   
   # Get file pattern from config or use default
   local file_pattern=$(get_config_value "file_pattern" "*.md")
@@ -385,7 +416,7 @@ process_files() {
   # Process each file
   for file in "${files_to_process[@]}"; do
     if [ -f "$file" ]; then
-      if convert_markdown_to_pdf "$file"; then
+      if convert_markdown_to_pdf "$file" "$format"; then
         ((success_count++))
       else
         ((failure_count++))
@@ -394,6 +425,35 @@ process_files() {
   done
   
   log_info "Completed processing: $success_count files converted successfully, $failure_count failures"
+}
+
+# Function: parse_arguments
+# Description: Parses command line arguments
+# Arguments:
+#   $@: Command line arguments
+parse_arguments() {
+  # Set defaults
+  FORMAT="$DEFAULT_FORMAT"
+
+  # Parse arguments
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --format=*)
+        FORMAT="${1#*=}"
+        shift
+        ;;
+      --format)
+        FORMAT="$2"
+        shift 2
+        ;;
+      *)
+        # Skip unknown options
+        shift
+        ;;
+    esac
+  done
+
+  log_info "Using format: $FORMAT"
 }
 
 # ============================================================================
@@ -405,14 +465,17 @@ main() {
   # Initialize log file
   > "$LOG_FILE"
   
+  # Parse command line arguments
+  parse_arguments "$@"
+  
   # Check for required dependencies
   check_requirements
   
-  # Load configuration
-  load_config
+  # Load configuration with format
+  load_config "$FORMAT"
   
-  # Process markdown files
-  process_files
+  # Process markdown files with format
+  process_files "$FORMAT"
   
   log_info "Script execution completed"
 }
