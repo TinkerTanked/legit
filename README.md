@@ -544,6 +544,46 @@ Tests run automatically on every pull request and push to the main branch via Gi
 
 For detailed information about the testing system, see [TESTING.md](TESTING.md).
 
+## Docker Support
+
+Legit provides a Docker container for consistent development and testing environments, especially useful for ARM64 architectures.
+
+### Using the Docker Container
+
+A helper script is provided to build and run the Docker container:
+
+```bash
+# Build and run the container
+./build-and-run.sh --run
+
+# Just build the container
+./build-and-run.sh
+
+# Show all options
+./build-and-run.sh --help
+```
+
+### Pushing to AWS ECR
+
+You can push the built image to Amazon ECR for use in CI/CD pipelines:
+
+```bash
+./build-and-run.sh --push --aws-region=us-east-1 --aws-account=123456789012 --ecr-repo=legit
+```
+
+### GitHub Actions Integration
+
+The repository includes a GitHub workflow that automatically builds and pushes the ARM64 container to ECR on:
+- Pushes to the main branch that modify the Dockerfile
+- Manual triggers using the "Actions" tab in GitHub
+- Weekly builds every Sunday
+
+To use this workflow, configure the following GitHub secrets:
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AWS_REGION`
+- `AWS_ACCOUNT_ID`
+
 ## Advanced Usage
 ### Using Different Format Templates
 
