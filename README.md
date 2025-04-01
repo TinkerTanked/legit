@@ -400,8 +400,14 @@ formats:
 
 The workflow runs automatically when:
 
-1. You push changes to any markdown (`.md`) files to the main branch
+1. You push changes to the `main` branch that include modifications to:
+   - Markdown (`.md`) files in the `content/` directory or its subdirectories
+   - Any files in the `templates/` directory (LaTeX templates)
+   - Any files in the `configs/` directory (workflow configuration files)
+
 2. You manually trigger the workflow from the GitHub Actions tab
+
+Note that changes to other files (such as scripts, images, or documentation) will NOT automatically trigger the workflow. This is controlled by the `paths` configuration in the GitHub workflow file.
 
 To manually trigger the workflow:
 1. Go to the "Actions" tab in your GitHub repository
@@ -409,6 +415,8 @@ To manually trigger the workflow:
 3. Click "Run workflow"
 4. Optionally specify a particular markdown file to process
 5. Click the "Run workflow" button
+
+When manually triggering the workflow, you can also choose to regenerate all markdown files in the content directory by selecting the "Regenerate all markdown files" option.
 
 ### Accessing Generated PDFs
 
