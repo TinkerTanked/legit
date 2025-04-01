@@ -1,12 +1,12 @@
 --[[
-Image Orientation Filter for Pandoc
+Image Orientation Filter for Pandoc (Scientific Format)
 
 This filter detects the orientation of images (landscape or portrait) from their attributes
-and transforms them into appropriate LaTeX commands based on the template being used.
+and transforms them into the appropriate LaTeX commands for scientific template.
 
-The filter supports two template types:
-1. Scientific template: \landscapefigure{label}{caption}{width}{path}
-2. Academic template: \landscapefigure{width}{label}{caption}{path}
+The filter ONLY supports scientific template format:
+  \landscapefigure{label}{caption}{width}{path}
+  \portraitfigure{label}{caption}{width}{path}
 
 Usage: Add orientation="landscape" or orientation="portrait" to your image attributes.
 Example: ![Caption](image.png){#fig:id orientation="landscape"}
@@ -20,20 +20,6 @@ local function debug(msg)
   if DEBUG then
     io.stderr:write("[DEBUG] " .. msg .. "\n")
   end
-end
-
--- Function to determine if we're using the scientific template
-local function is_scientific_template(meta)
-  -- Check metadata for template type
-  if meta.template then
-    local template = pandoc.utils.stringify(meta.template)
-    debug("Template: " .. template)
-    return template:match("scientific") ~= nil
-  end
-  
-  -- Default to scientific if not specified
-  debug("No template specified, defaulting to scientific")
-  return true
 end
 
 -- Function to extract just the filename from a path
@@ -73,27 +59,8 @@ local function format_scientific_figure(id, caption, width, path, is_landscape)
   return latex_code
 end
 
--- Function to handle academic template figures
-local function format_academic_figure(id, caption, width, path, is_landscape)
-  local latex_cmd = is_landscape and "\\landscapefigure" or "\\portraitfigure"
-  local label = id and id or get_filename(path):gsub("%.%w+$", "")
-  
-  -- Academic template order: {width}{label}{caption}{path}
-  local latex_code = string.format(
-    "%s{%s}{%s}{%s}{%s}",
-    latex_cmd,
-    width,
-    label,
-    caption,
-    escape_latex_path(path)
-  )
-  
-  debug("Academic format: " .. latex_code)
-  return latex_code
-end
-
 -- Main filter function for images
-function Image(elem)
+local function image_filter(elem)
   -- Check if image has orientation attribute
   local orientation = elem.attributes["orientation"]
   if not orientation then
@@ -116,7 +83,7 @@ function Image(elem)
   debug("Width: " .. width)
   debug("ID: " .. (id or "none"))
   
-  -- Always use scientific format for this file
+  -- Scientific format only
   local latex_code = format_scientific_figure(id, caption, width, path, is_landscape)
   
   -- Return raw LaTeX
@@ -129,17 +96,10 @@ function Image(elem)
   end
 end
 
--- Function to handle metadata (kept for compatibility, not used in this version)
-function Meta(meta)
-  -- For scientific format, we don't need to check the metadata
-  return nil
-end
-
 -- Return the filter
 return {
   {
-    Meta = Meta,
-    Image = Image
+    Image = image_filter
   }
 }
 
