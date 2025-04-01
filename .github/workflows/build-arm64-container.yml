@@ -50,7 +50,9 @@ jobs:
       # Step 5: Login to Amazon ECR
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'false'
       
       # Step 6: Extract metadata for Docker
       - name: Extract Docker metadata
@@ -60,7 +62,7 @@ jobs:
           images: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/legit
           tags: |
             type=sha,format=short      
-            
+
       # Step 7: Build and push Docker image to ECR
       - name: Build and push Docker image
         uses: docker/build-push-action@v6

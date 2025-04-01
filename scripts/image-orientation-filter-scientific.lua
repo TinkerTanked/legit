@@ -74,7 +74,25 @@ local function image_filter(elem)
   
   -- Extract image information
   local path = elem.src
-  local caption = pandoc.utils.stringify(elem.caption)
+  
+  -- Safer caption extraction with multiple fallback methods
+  local caption = ""
+  if elem.caption then
+    if type(elem.caption) == "string" then
+      caption = elem.caption
+    elseif pandoc.utils and pandoc.utils.stringify then
+      -- Use pandoc.utils.stringify if available
+      caption = pandoc.utils.stringify(elem.caption)
+    else
+      -- Fallback method - try to extract from a table
+      if type(elem.caption) == "table" then
+        if elem.caption[1] and elem.caption[1].text then
+          caption = elem.caption[1].text
+        end
+      end
+    end
+  end
+  
   local width = elem.attributes.width or "\\linewidth"
   local id = elem.identifier ~= "" and elem.identifier or nil
   
@@ -87,11 +105,27 @@ local function image_filter(elem)
   local latex_code = format_scientific_figure(id, caption, width, path, is_landscape)
   
   -- Return raw LaTeX
-  if elem.parent and elem.parent.t == "Para" then
-    -- Image is inline within a paragraph
+  -- Check if image is inline or block
+  local isInline = false
+  
+  -- Safer parent element check
+  if elem.parent then
+    if elem.parent.t == "Para" and #elem.parent.content == 1 then
+      -- Single image in a paragraph - treat as block
+      isInline = false
+    elseif elem.parent.t == "Para" then
+      -- Image within text in a paragraph - treat as inline
+      isInline = true
+    end
+  end
+  
+  debug("Image is " .. (isInline and "inline" or "block"))
+  
+  if isInline then
+    debug("Returning RawInline")
     return pandoc.RawInline("latex", latex_code)
   else
-    -- Image is a block element
+    debug("Returning RawBlock")
     return pandoc.RawBlock("latex", latex_code)
   end
 end
