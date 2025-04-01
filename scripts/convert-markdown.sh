@@ -340,7 +340,7 @@ convert_markdown_to_pdf() {
   local lua_filter_path="$SCRIPT_DIR/image-orientation-filter.lua"
   
   # Use format-specific filter if it exists
-  local format_specific_filter="$SCRIPT_DIR/image-orientation-filter-${format}.lua"
+  local format_specific_filter="$SCRIPT_DIR/image-orientation-filter-$format.lua"
   if [ -f "$format_specific_filter" ]; then
     lua_filter_path="$format_specific_filter"
   fi
