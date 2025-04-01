@@ -1,11 +1,31 @@
-# ██╗     ███████╗ ██████╗ ██╗████████╗
-# ██║     ██╔════╝██╔════╝ ██║╚══██╔══╝
-# ██║     █████╗  ██║  ███╗██║   ██║   
-# ██║     ██╔══╝  ██║   ██║██║   ██║   
-# ███████╗███████╗╚██████╔╝██║   ██║   
-# ╚══════╝╚══════╝ ╚═════╝ ╚═╝   ╚═╝   
-#                                      
-# Lightweight Engine Generating Instant Typesets
+<div align="center">
+  <h1>
+    <span style="display:block;margin:0.5em">
+      <span style="font-size:2em;color:#4A86E8">L</span><span style="font-size:1.7em">EGIT</span>
+    </span>
+  </h1>
+  
+  <h3><em><strong>L</strong>ightweight <strong>E</strong>ngine <strong>G</strong>enerating <strong>I</strong>nstant <strong>T</strong>ypesets</em></h3>
+  
+  <p><em>Transform markdown into beautiful PDFs with multiple templates</em></p>
+  
+  <pre style="line-height:1.2;font-size:0.9em;max-width:480px;margin:1em auto;font-family:monospace,monospace">
+██╗     ███████╗ ██████╗ ██╗████████╗
+██║     ██╔════╝██╔════╝ ██║╚══██╔══╝
+██║     █████╗  ██║  ███╗██║   ██║   
+██║     ██╔══╝  ██║   ██║██║   ██║   
+███████╗███████╗╚██████╔╝██║   ██║   
+╚══════╝╚══════╝ ╚═════╝ ╚═╝   ╚═╝   
+  </pre>
+  
+  <div>
+    <img src="https://img.shields.io/badge/Markdown-to-brightgreen.svg" alt="Markdown">
+    <img src="https://img.shields.io/badge/PDF-Conversion-blue.svg" alt="PDF">
+    <img src="https://img.shields.io/badge/Multiple-Templates-orange.svg" alt="Templates">
+  </div>
+</div>
+
+---
 
 This repository contains a powerful document conversion system that automatically transforms markdown files into professionally formatted PDF documents using multiple customizable templates. The system integrates with GitHub Actions to provide continuous delivery of beautifully formatted scientific papers, academic documents, and technical reports — all from a single markdown source.
 
