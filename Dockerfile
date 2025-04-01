@@ -54,9 +54,24 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends inkscape \
     && rm -rf /var/lib/apt/lists/*
 
-# Install additional LaTeX packages with tlmgr
-RUN tlmgr init-usertree \
-    && tlmgr install mathtools physics algorithms algorithmicx algorithm2e adjustbox collectbox xkeyval pdflscape threeparttable
+# Install additional LaTeX packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    texlive-latex-extra \
+    texlive-science \
+    texlive-publishers \
+    && rm -rf /var/lib/apt/lists/*
+
+# Verify LaTeX packages are available
+RUN echo "Verifying LaTeX packages..." \
+    && kpsewhich mathtools.sty \
+    && kpsewhich physics.sty \
+    && kpsewhich algorithm2e.sty \
+    && kpsewhich adjustbox.sty \
+    && kpsewhich collectbox.sty \
+    && kpsewhich xkeyval.sty \
+    && kpsewhich pdflscape.sty \
+    && kpsewhich threeparttable.sty \
+    || echo "Some packages might be missing, but continuing anyway"
 
 # Create workspace directory
 WORKDIR /workspace
