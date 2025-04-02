@@ -1,124 +1,50 @@
 --[[
-Simplified Image Orientation Filter for Pandoc (Academic Format)
+Debug Image Orientation Filter for Pandoc (Academic Format)
 
-This filter detects the orientation of images (landscape or portrait) from their attributes
-and transforms them into the appropriate LaTeX commands for academic template.
-
-The filter ONLY supports academic template format:
-  \begin{landscape}\includegraphics...\end{landscape}
-  \includegraphics...
-
-This simplified version ALWAYS returns a block element for any image with an orientation attribute.
-
-Usage: Add orientation="landscape" or orientation="portrait" to your image attributes.
-Example: ![Caption](image.png){#fig:id orientation="landscape"}
+Extremely simplified and defensive version with extensive debug logging.
 ]]--
 
--- Configuration
-local DEBUG = false -- Set to true to enable debug output
+-- Enable debug mode
+local DEBUG = true
 
--- Helper function for debug logging
+-- Debug logging
 local function debug(msg)
   if DEBUG then
     io.stderr:write("[DEBUG] " .. msg .. "\n")
   end
 end
 
--- Function to escape special characters in LaTeX paths
-local function escape_latex_path(path)
-  -- Escape LaTeX special characters
-  local escaped = path:gsub("([#$%&_{}^~\\])", "\\%1")
-  return escaped
-end
+debug("Filter loaded - Pandoc version: " .. (PANDOC_VERSION or "unknown"))
 
--- Extract text from a caption (simplified approach)
-local function extract_caption_text(caption)
-  if caption == nil then
-    return ""
-  end
+-- Super simple filtering function
+-- Always returns unmodified image to avoid any metamethod issues
+function Image(elem)
+  debug("Image encountered: " .. (elem.src or "unknown source"))
   
-  if type(caption) == "string" then
-    return caption
-  end
-  
-  -- Try to extract from Pandoc's Inlines
-  if type(caption) == "table" then
-    -- Simple approach: just join any text we find
-    local texts = {}
-    local traverse
-    traverse = function(tbl)
-      if tbl.text then
-        table.insert(texts, tbl.text)
-      elseif type(tbl) == "table" then
-        for _, v in ipairs(tbl) do
-          if type(v) == "table" then
-            traverse(v)
-          elseif type(v) == "string" then
-            table.insert(texts, v)
-          end
-        end
-      end
-    end
-    traverse(caption)
-    return table.concat(texts, " ")
-  end
-  
-  return ""
-end
-
--- Function to format academic figures
-local function format_academic_figure(id, caption, width, path, is_landscape)
-  local label = id and ("\\label{" .. id .. "}") or ""
-  local figure_env = "\\begin{figure}[htbp]\n\\centering\n"
-  local end_env = "\\caption{" .. caption .. "}" .. label .. "\n\\end{figure}"
-  
-  local graphics_cmd = "\\includegraphics[width=" .. width .. "]{" .. escape_latex_path(path) .. "}"
-  
-  local latex_code
-  if is_landscape then
-    latex_code = figure_env .. "\\begin{landscape}\n" .. graphics_cmd .. "\n\\end{landscape}\n" .. end_env
+  -- Just log information without modifying anything
+  if elem.attributes and elem.attributes["orientation"] then
+    debug("  Orientation: " .. elem.attributes["orientation"])
   else
-    latex_code = figure_env .. graphics_cmd .. "\n" .. end_env
+    debug("  No orientation attribute")
   end
   
-  debug("Academic format: " .. latex_code)
-  return latex_code
-end
-
--- Main filter function for images
-local function image_filter(elem)
-  -- Only process images that have an orientation attribute
-  local orientation = elem.attributes and elem.attributes["orientation"]
-  if not orientation then
-    debug("No orientation specified for image: " .. elem.src)
-    return nil -- No changes to image
+  if elem.identifier and elem.identifier ~= "" then
+    debug("  ID: " .. elem.identifier)
+  else
+    debug("  No identifier")
   end
   
-  -- Determine if landscape or portrait
-  local is_landscape = orientation:lower() == "landscape"
-  debug("Image orientation: " .. orientation)
+  -- Log caption info
+  debug("  Caption type: " .. type(elem.caption))
+  if type(elem.caption) == "table" then
+    debug("  Caption table length: " .. #elem.caption)
+  end
   
-  -- Extract image information
-  local path = elem.src
-  local caption_text = extract_caption_text(elem.caption)
-  local width = elem.attributes.width or "\\linewidth"
-  local id = elem.identifier ~= "" and elem.identifier or nil
-  
-  debug("Image path: " .. path)
-  debug("Caption: " .. caption_text)
-  debug("Width: " .. width)
-  debug("ID: " .. (id or "none"))
-  
-  -- Format academic figure
-  local latex_code = format_academic_figure(id, caption_text, width, path, is_landscape)
-  
-  -- ALWAYS return as a block element, never inline
-  return pandoc.RawBlock("latex", latex_code)
+  -- Return the element unmodified - this should never cause issues
+  return elem
 end
 
 -- Return the filter
 return {
-  {
-    Image = image_filter
-  }
+  { Image = Image }
 }
