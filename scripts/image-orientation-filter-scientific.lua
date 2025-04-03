@@ -14,7 +14,7 @@ local function debug(msg)
   end
 end
 
-debug("Scientific filter loaded - Pandoc version: " .. (PANDOC_VERSION or "unknown"))
+debug("Scientific filter loaded - Pandoc version: " .. (tostring(PANDOC_VERSION) or "unknown"))
 
 -- Super simple filtering function
 -- Always returns unmodified image to avoid any metamethod issues
