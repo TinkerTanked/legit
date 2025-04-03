@@ -93,7 +93,7 @@ jobs:
 
           # Install LaTeX packages
           tlmgr update --self
-          tlmgr install mathtools physics algorithms algorithmicx algorithm2e adjustbox collectbox xkeyval pdflscape threeparttable
+          tlmgr install mathtools physics algorithms algorithmicx algorithm2e adjustbox collectbox xkeyval pdflscape threeparttable wrapfig
           
       # Step 4b: Install Inkscape with minimal dependencies
       - name: Install Inkscape
