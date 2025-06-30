@@ -41,42 +41,42 @@ Legit makes it easy to write content once in markdown format and automatically g
 
 ## Multi-Format Capability
 
-Legit supports generating papers in multiple formatting styles from the same markdown source:
+**🎯 The core power of Legit**: Transform a single markdown file into multiple professional PDF formats, each optimized for different academic contexts.
 
-1. **Scientific Format**: A traditional scientific paper layout with two-column formatting, ideal for conference submissions and journal articles
-2. **Academic Format**: A clean, single-column layout suited for theses, dissertations, and academic reports
+### Format Showcase
 
-This multi-format capability allows you to:
+See our [format showcase document](content/format-showcase.md) that demonstrates the dramatic differences between templates. From one markdown source, Legit generates:
 
-* Maintain a single markdown source for your content
-* Generate different formats for different submission requirements
-* Quickly switch between styles without reformatting
-* Customize each format independently through separate templates
+1. **Scientific Format** (2-column, 73KB): Traditional journal-style layout with tight spacing, perfect for conference papers and research articles
+2. **Academic Format** (single-column, 150KB): Clean, readable layout ideal for dissertations, theses, and detailed technical reports
 
-You can generate both formats simultaneously using the provided `generate-all-formats.sh` script, or specify a particular format during manual conversion.
-
-### Format Comparison
-
-The following table compares the key differences between the scientific and academic formats:
+### Key Differences
 
 | Feature | Scientific Format | Academic Format |
 | --- | --- | --- |
-| **Layout** | Two-column layout | Single-column layout |
-| **Margins** | Narrower margins (1 inch) | Wider margins (1.5 inches) |
-| **Font** | Computer Modern | Times New Roman |
-| **Line Spacing** | Single-spaced | 1.5-spaced |
-| **Section Numbering** | Numbered sections (1, 1.1, etc.) | Optionally numbered |
-| **References** | IEEE-style | APA or Chicago style |
-| **Header/Footer** | Compact with page numbers | More detailed with paper title |
-| **Math Formatting** | Optimized for complex equations | Standard LaTeX math |
-| **Figures** | Typically smaller, integrated in columns | Larger, centered on page |
-| **Best For** | Conference papers, journal articles, research briefs | Dissertations, theses, detailed technical reports |
-| **Page Limit** | Optimized for concise presentation | Better for longer documents |
-| **Title Page** | Simple, integrated title | Separate, detailed title page |
+| **Layout** | **Two-column layout** for space efficiency | **Single-column layout** for readability |
+| **Margins** | Tight 2cm margins with 1cm column separation | Generous 1.2-inch margins |
+| **Font** | Latin Modern (optimized for equations) | Times New Roman (traditional academic) |
+| **Line Spacing** | Compact 1.1x spacing | Comfortable 1.5x spacing |
+| **Code Highlighting** | Syntax-highlighted code blocks | Syntax-highlighted code blocks |
+| **Math Support** | Full LaTeX math with physics package | Full LaTeX math with physics package |
+| **Best For** | Journal submissions, conference papers | Dissertations, technical reports |
+| **Page Efficiency** | ~50% more content per page | Optimized for longer documents |
 
-The scientific format prioritizes space efficiency and concise presentation, making it ideal for publications with strict page limits. The academic format emphasizes readability and comprehensive presentation, better suited for longer documents where detailed explanation is valued over brevity.
+### Real-World Example
 
-Both formats support the same markdown features (equations, tables, citations, etc.), but render them differently to match the conventions of their respective document types.
+Our showcase paper demonstrates:
+- **Complex mathematical equations** with proper LaTeX rendering
+- **Syntax-highlighted Python code** showing neural network architectures
+- **Professional scientific content** with abstracts, citations, and references
+- **Identical markdown source** producing distinctly different PDF outputs
+
+Both formats support the same advanced features:
+- Mathematical equations and scientific notation
+- Code blocks with syntax highlighting
+- Tables, figures, and cross-references
+- Citation management and bibliographies
+- Custom styling and formatting options
 ## Repository Structure
 
 The repository is organized into a modular structure for better maintainability:
@@ -87,7 +87,9 @@ legit/
 ├── configs/              # Configuration files for the workflow
 │   └── workflow-config.yml    # Main configuration settings
 ├── content/              # Markdown papers to be converted
-│   └── example-paper.md  # Example scientific paper template
+│   ├── example-paper.md  # Example scientific paper template
+│   ├── demo-paper.md     # Climate science ML demo paper
+│   └── format-showcase.md # Comprehensive format showcase document
 ├── figures/              # Image files for papers
 │   ├── portrait images   # Images in portrait orientation
 │   └── landscape images  # Images in landscape orientation
@@ -193,28 +195,24 @@ Once dependencies are installed, you can test the conversion process:
    chmod +x scripts/convert-markdown.sh
    ```
 
-3. Run a test conversion on the example paper:
+3. Run a test conversion on the showcase paper:
    ```bash
-   # For scientific format
-   ./scripts/convert-markdown.sh --input=content/example-paper.md --output-dir=pdfs --template=templates/scientific-paper.tex --engine=xelatex
+   # Generate both formats at once (recommended)
+   ./scripts/generate-all-formats.sh content/format-showcase.md
    
-   # For academic format
-   ./scripts/convert-markdown.sh --input=content/example-paper.md --output-dir=pdfs --template=templates/academic-paper.tex --engine=xelatex
-   
-   # Or generate both formats at once
-   ./scripts/generate-all-formats.sh --input=content/example-paper.md
+   # Or generate individual formats
+   ./scripts/convert-markdown.sh --format=scientific --input=content/format-showcase.md
+   ./scripts/convert-markdown.sh --format=academic --input=content/format-showcase.md
    ```
 
    On Windows (using Git Bash or WSL):
    ```bash
-   # For scientific format
-   bash scripts/convert-markdown.sh --input=content/example-paper.md --output-dir=pdfs --template=templates/scientific-paper.tex --engine=xelatex
+   # Generate both formats at once (recommended)
+   bash scripts/generate-all-formats.sh content/format-showcase.md
    
-   # For academic format
-   bash scripts/convert-markdown.sh --input=content/example-paper.md --output-dir=pdfs --template=templates/academic-paper.tex --engine=xelatex
-   
-   # Or generate both formats at once
-   bash scripts/generate-all-formats.sh --input=content/example-paper.md
+   # Or generate individual formats
+   bash scripts/convert-markdown.sh --format=scientific --input=content/format-showcase.md
+   bash scripts/convert-markdown.sh --format=academic --input=content/format-showcase.md
    ```
 
 4. Verify the PDF was generated in the `pdfs` directory

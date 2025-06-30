@@ -25,3 +25,17 @@
 - **File Organization**: Modular structure with separate directories for scripts, templates, content
 - **Dependencies**: Check for required tools (pandoc, xelatex, inkscape) before execution
 - **Testing**: Shell-based tests with temporary directories and cleanup
+
+## Template Development
+- **Scientific Template**: Must use `twocolumn` document class for proper 2-column layout
+- **Code Highlighting**: Include `fancyvrb`, `framed`, and define `Shaded`/`Highlighting` environments
+- **Syntax Highlighting**: Define all Pandoc syntax highlighting commands (`\KeywordTok`, `\StringTok`, etc.)
+- **Package Compatibility**: `longtable` incompatible with `twocolumn`, use `supertabular` instead
+- **Color Definitions**: Define `shadecolor` after loading `xcolor` package
+- **Math Support**: Include `amsmath`, `amssymb`, `mathtools`, `physics` packages for equations
+- **Cross-Platform**: Handle SVG conversion with both Inkscape and rsvg-convert fallbacks
+
+## Example Documents
+- **format-showcase.md**: Comprehensive demo showing dramatic template differences (73KB vs 150KB PDFs)
+- **demo-paper.md**: Climate science ML paper with tables, equations, professional structure
+- **simple-test.md**: Basic test document for quick validation
