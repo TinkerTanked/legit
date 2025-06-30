@@ -41,9 +41,14 @@
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
 % Font settings (different from scientific template)
-\setmainfont{Palatino Linotype}
-\setsansfont{Optima}
-\setmonofont{Consolas}
+% Use commonly available fonts on macOS/Linux
+\setmainfont{Times New Roman}[
+  BoldFont = Times New Roman Bold,
+  ItalicFont = Times New Roman Italic,
+  BoldItalicFont = Times New Roman Bold Italic,
+]
+\setsansfont{Arial}
+\setmonofont{Courier New}
 
 % Hyperref settings
 \hypersetup{

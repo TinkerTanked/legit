@@ -1,0 +1,5 @@
+# Keep directory structure but ignore generated PDFs
+pdfs/*.pdf
+pdfs/*/*.pdf
+!pdfs/.gitkeep
+!pdfs/*/.gitkeep
