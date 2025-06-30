@@ -14,6 +14,10 @@
 \usepackage{csquotes}
 \usepackage{microtype}
 \usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{physics}
 % Add graphics path to help find figure files
 \graphicspath{{./figures/}{../figures/}}
 \usepackage{rotating}
@@ -39,6 +43,9 @@
 
 % Define missing commands that might be used by pandoc
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Define pandocbounded command to fix conversion error
+\providecommand{\pandocbounded}[1]{\csname pandocbounded#1\endcsname}
 
 % Font settings (different from scientific template)
 % Use commonly available fonts on macOS/Linux
