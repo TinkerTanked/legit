@@ -1,0 +1,259 @@
+% Preprint LaTeX Template
+% Optimized for arXiv, bioRxiv, and other preprint servers
+% Clean, readable design for online consumption
+
+\documentclass[11pt, a4paper, onecolumn]{article}
+
+% Essential packages
+\usepackage[margin=1.2in]{geometry}
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{physics}
+
+% Add graphics path to help find figure files
+\graphicspath{{./figures/}{../figures/}}
+
+% Color packages
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+% Preprint color scheme (clean, minimal)
+\definecolor{preprintblue}{RGB}{0, 123, 255}
+\definecolor{preprintgray}{RGB}{108, 117, 125}
+\definecolor{lightblue}{RGB}{232, 245, 255}
+\definecolor{darkgray}{RGB}{52, 58, 64}
+\definecolor{shadecolor}{rgb}{0.97,0.97,0.97}
+
+% Table and figure packages
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{rotating}
+\usepackage{pdflscape}
+
+% Code highlighting packages
+\usepackage{fancyvrb}
+\usepackage{framed}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newenvironment{Highlighting}{\begin{Shaded}}{\end{Shaded}}
+
+% Define syntax highlighting commands
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+
+% Font settings optimized for screen reading
+\setmainfont{Times New Roman}[
+  BoldFont = Times New Roman Bold,
+  ItalicFont = Times New Roman Italic,
+  BoldItalicFont = Times New Roman Bold Italic,
+]
+\setsansfont{Arial}
+\setmonofont{Courier New}
+
+% Line spacing optimized for digital reading
+\usepackage{setspace}
+\setstretch{1.4}
+
+% Header and footer - minimal for preprints
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhead[L]{\textcolor{preprintgray}{\small PREPRINT}}
+\fancyhead[R]{\textcolor{preprintgray}{\small \thepage}}
+
+% Title formatting
+\usepackage{titlesec}
+\titleformat{\section}
+  {\color{darkgray}\Large\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}
+  {\color{preprintgray}\large\bfseries}{\thesubsection.}{1em}{}
+\titleformat{\subsubsection}
+  {\color{preprintgray}\normalsize\bfseries}{\thesubsubsection.}{1em}{}
+
+% Hyperlinks optimized for digital
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=preprintblue,
+    filecolor=preprintblue,
+    urlcolor=preprintblue,
+    citecolor=preprintblue,
+    pdfauthor={$author$},
+    pdftitle={$title$},
+    pdfpagemode={UseOutlines},
+    bookmarksopen=true,
+    pdfstartview={FitH}
+}
+
+% Bibliography style appropriate for preprints
+\usepackage[backend=biber, style=nature, citestyle=numeric-comp]{biblatex}
+
+% Define missing commands
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\pandocbounded}[1]{\csname pandocbounded#1\endcsname}
+
+% Custom abstract environment for preprints
+\renewenvironment{abstract}{
+  \begin{tcolorbox}[
+    colback=lightblue,
+    colframe=preprintblue,
+    boxrule=1pt,
+    arc=5pt,
+    left=15pt,
+    right=15pt,
+    top=15pt,
+    bottom=15pt,
+    title={\textcolor{preprintblue}{\textbf{Abstract}}},
+    coltitle=preprintblue,
+    colbacktitle=white,
+    fonttitle=\bfseries
+  ]
+}{
+  \end{tcolorbox}
+}
+
+% Caption styling
+\usepackage[font=small,
+            labelfont=bf,
+            labelsep=period,
+            justification=justified]{caption}
+
+% Custom title page for preprints
+\makeatletter
+\def\@maketitle{%
+  \newpage
+  \null
+  \vskip 1em%
+  \begin{center}%
+    {\LARGE \textcolor{darkgray}{\textbf{$title$}} \par}%
+    \vskip 1em%
+    {\large \textcolor{preprintgray}{$author$} \par}%
+    \vskip 0.5em%
+    {\normalsize \textcolor{preprintgray}{$date$} \par}%
+    \vskip 0.5em%
+    {\small \textcolor{preprintgray}{\textit{Preprint - Not peer reviewed}} \par}%
+  \end{center}%
+  \par
+  \vskip 1em}
+\makeatother
+
+% Preprint-specific environments
+\newenvironment{preprintinfo}{
+  \begin{tcolorbox}[
+    colback=white,
+    colframe=preprintgray,
+    boxrule=1pt,
+    arc=3pt,
+    left=10pt,
+    right=10pt,
+    top=10pt,
+    bottom=10pt
+  ]
+  \small
+}{
+  \end{tcolorbox}
+}
+
+% Author affiliations with footnotes
+\newcommand{\affiliation}[2]{%
+  \thanks{#1: #2}%
+}
+
+% DOI and preprint server info
+\newcommand{\preprintdoi}[1]{%
+  \vspace{1em}
+  \begin{center}
+    \small
+    \textcolor{preprintgray}{
+      \textbf{DOI:} \href{https://doi.org/#1}{#1}
+    }
+  \end{center}
+}
+
+% Keywords environment
+\newenvironment{keywords}{
+  \vspace{1em}
+  \noindent
+  \textbf{Keywords:} 
+}{
+  \vspace{1em}
+}
+
+% Begin document
+\begin{document}
+
+% Print title page
+\maketitle
+\thispagestyle{fancy}
+
+% Abstract prominently displayed
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+\vspace{1em}
+$endif$
+
+% Keywords if provided
+$if(keywords)$
+\begin{keywords}
+$for(keywords)$$keywords$$sep$, $endfor$
+\end{keywords}
+$endif$
+
+% Preprint information
+\begin{preprintinfo}
+\textbf{Preprint Information:} This manuscript has not undergone peer review. 
+The findings and conclusions presented are preliminary and subject to revision. 
+For the most current version, please check the preprint server.
+\end{preprintinfo}
+
+% Main document content
+$body$
+
+% References section if provided
+$if(bibliography)$
+\newpage
+\printbibliography[title=References]
+$endif$
+
+\end{document}

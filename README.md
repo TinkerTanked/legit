@@ -41,27 +41,30 @@ Legit makes it easy to write content once in markdown format and automatically g
 
 ## Multi-Format Capability
 
-**🎯 The core power of Legit**: Transform a single markdown file into multiple professional PDF formats, each optimized for different academic contexts.
+**🎯 The core power of Legit**: Transform a single markdown file into **5 professional PDF formats**, each optimized for different academic and professional contexts.
 
 ### Format Showcase
 
 See our [format showcase document](content/format-showcase.md) that demonstrates the dramatic differences between templates. From one markdown source, Legit generates:
 
 1. **Scientific Format** (2-column, 73KB): Traditional journal-style layout with tight spacing, perfect for conference papers and research articles
-2. **Academic Format** (single-column, 150KB): Clean, readable layout ideal for dissertations, theses, and detailed technical reports
+2. **Academic Format** (single-column, 150KB): Clean, readable layout ideal for dissertations, theses, and detailed technical reports  
+3. **Technical Report Format** (135KB): Corporate styling with professional branding, perfect for R&D reports and consulting documents
+4. **Preprint Format** (128KB): Optimized for online reading on arXiv, bioRxiv, and other preprint servers
+5. **Thesis Format** (130KB): Formal university formatting with comprehensive front matter for PhD dissertations
 
-### Key Differences
+### Complete Format Comparison
 
-| Feature | Scientific Format | Academic Format |
-| --- | --- | --- |
-| **Layout** | **Two-column layout** for space efficiency | **Single-column layout** for readability |
-| **Margins** | Tight 2cm margins with 1cm column separation | Generous 1.2-inch margins |
-| **Font** | Latin Modern (optimized for equations) | Times New Roman (traditional academic) |
-| **Line Spacing** | Compact 1.1x spacing | Comfortable 1.5x spacing |
-| **Code Highlighting** | Syntax-highlighted code blocks | Syntax-highlighted code blocks |
-| **Math Support** | Full LaTeX math with physics package | Full LaTeX math with physics package |
-| **Best For** | Journal submissions, conference papers | Dissertations, technical reports |
-| **Page Efficiency** | ~50% more content per page | Optimized for longer documents |
+| Feature | Scientific | Academic | Technical Report | Preprint | Thesis |
+| --- | --- | --- | --- | --- | --- |
+| **Layout** | 2-column | Single-column | Single + sidebar | Single-column | Chapter-based |
+| **Page Size** | 73KB | 150KB | 135KB | 128KB | 130KB |
+| **Target** | Journals | Papers | Corporate | Online | Universities |
+| **Spacing** | Compact 1.1x | Standard 1.5x | Standard 1.5x | Relaxed 1.4x | Double spacing |
+| **Styling** | Minimal | Traditional | Corporate branding | Clean/minimal | Formal academic |
+| **Colors** | Black/white | Black/white | Blue/gray theme | Blue accents | Traditional |
+| **Headers** | Simple | Detailed | Corporate style | Minimal | Chapter-based |
+| **Best For** | Conference papers | Academic papers | R&D reports | Research sharing | Dissertations |
 
 ### Real-World Example
 
@@ -71,12 +74,13 @@ Our showcase paper demonstrates:
 - **Professional scientific content** with abstracts, citations, and references
 - **Identical markdown source** producing distinctly different PDF outputs
 
-Both formats support the same advanced features:
-- Mathematical equations and scientific notation
-- Code blocks with syntax highlighting
-- Tables, figures, and cross-references
-- Citation management and bibliographies
-- Custom styling and formatting options
+All formats support the same advanced features:
+- **Mathematical equations** with full LaTeX support and physics notation
+- **Syntax-highlighted code blocks** with professional formatting  
+- **Tables, figures, and cross-references** with automatic numbering
+- **Citation management and bibliographies** with multiple styles
+- **Professional styling** optimized for each format's target audience
+- **Cross-platform compatibility** with consistent rendering
 ## Repository Structure
 
 The repository is organized into a modular structure for better maintainability:
@@ -97,8 +101,11 @@ legit/
 │   ├── convert-markdown.sh    # Markdown to PDF conversion script
 │   └── generate-all-formats.sh # Generate PDFs in all available formats
 ├── templates/            # LaTeX templates for styling
-│   ├── scientific-paper.tex   # Scientific paper LaTeX template
-│   └── academic-paper.tex     # Academic paper LaTeX template
+│   ├── scientific-paper.tex   # Scientific paper LaTeX template (2-column)
+│   ├── academic-paper.tex     # Academic paper LaTeX template (single-column)
+│   ├── technical-report.tex   # Technical report LaTeX template (corporate)
+│   ├── preprint.tex           # Preprint LaTeX template (online-optimized)
+│   └── thesis.tex             # Thesis LaTeX template (formal university)
 └── README.md             # This documentation file
 ```
 
@@ -197,22 +204,28 @@ Once dependencies are installed, you can test the conversion process:
 
 3. Run a test conversion on the showcase paper:
    ```bash
-   # Generate both formats at once (recommended)
+   # Generate all 5 formats at once (recommended)
    ./scripts/generate-all-formats.sh content/format-showcase.md
    
    # Or generate individual formats
    ./scripts/convert-markdown.sh --format=scientific --input=content/format-showcase.md
    ./scripts/convert-markdown.sh --format=academic --input=content/format-showcase.md
+   ./scripts/convert-markdown.sh --format=technical-report --input=content/format-showcase.md
+   ./scripts/convert-markdown.sh --format=preprint --input=content/format-showcase.md
+   ./scripts/convert-markdown.sh --format=thesis --input=content/format-showcase.md
    ```
 
    On Windows (using Git Bash or WSL):
    ```bash
-   # Generate both formats at once (recommended)
+   # Generate all 5 formats at once (recommended)
    bash scripts/generate-all-formats.sh content/format-showcase.md
    
    # Or generate individual formats
    bash scripts/convert-markdown.sh --format=scientific --input=content/format-showcase.md
    bash scripts/convert-markdown.sh --format=academic --input=content/format-showcase.md
+   bash scripts/convert-markdown.sh --format=technical-report --input=content/format-showcase.md
+   bash scripts/convert-markdown.sh --format=preprint --input=content/format-showcase.md
+   bash scripts/convert-markdown.sh --format=thesis --input=content/format-showcase.md
    ```
 
 4. Verify the PDF was generated in the `pdfs` directory

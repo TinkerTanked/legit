@@ -1,0 +1,280 @@
+% Technical Report LaTeX Template
+% Professional corporate/industry report format with sidebar and branding
+% Optimized for R&D reports, consulting documents, and technical analyses
+
+\documentclass[12pt, a4paper, onecolumn]{article}
+
+% Essential packages
+\usepackage[margin=1in, marginparwidth=1.5in, marginparsep=0.2in]{geometry}
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{physics}
+
+% Add graphics path to help find figure files
+\graphicspath{{./figures/}{../figures/}}
+
+% Color and styling packages
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+
+% Professional color scheme
+\definecolor{corporateblue}{RGB}{25, 118, 210}
+\definecolor{corporategray}{RGB}{96, 125, 139}
+\definecolor{lightgray}{RGB}{245, 245, 245}
+\definecolor{darkgray}{RGB}{55, 71, 79}
+\definecolor{accentorange}{RGB}{255, 152, 0}
+\definecolor{shadecolor}{rgb}{0.97,0.97,0.97}
+
+% Table and figure packages
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{rotating}
+\usepackage{pdflscape}
+
+% Code highlighting packages
+\usepackage{fancyvrb}
+\usepackage{framed}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newenvironment{Highlighting}{\begin{Shaded}}{\end{Shaded}}
+
+% Define syntax highlighting commands
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+
+% Font settings
+\setmainfont{Times New Roman}[
+  BoldFont = Times New Roman Bold,
+  ItalicFont = Times New Roman Italic,
+  BoldItalicFont = Times New Roman Bold Italic,
+]
+\setsansfont{Arial}
+\setmonofont{Courier New}
+
+% Header and footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{1pt}
+
+% Custom header with corporate styling
+\fancyhead[L]{\textcolor{corporateblue}{\textbf{TECHNICAL REPORT}}}
+\fancyhead[R]{\textcolor{corporategray}{\textbf{\thepage}}}
+\fancyfoot[L]{\textcolor{corporategray}{\small $title$}}
+\fancyfoot[R]{\textcolor{corporategray}{\small $date$}}
+
+% Title formatting
+\usepackage{titlesec}
+\titleformat{\section}
+  {\color{corporateblue}\Large\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}
+  {\color{corporategray}\large\bfseries}{\thesubsection.}{1em}{}
+\titleformat{\subsubsection}
+  {\color{darkgray}\normalsize\bfseries}{\thesubsubsection.}{1em}{}
+
+% Line spacing
+\usepackage{setspace}
+\onehalfspacing
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=corporateblue,
+    filecolor=corporateblue,
+    urlcolor=corporateblue,
+    citecolor=corporateblue,
+    pdfauthor={$author$},
+    pdftitle={$title$},
+    pdfpagemode={UseOutlines},
+    bookmarksopen=true,
+    pdfstartview={FitH}
+}
+
+% Bibliography
+\usepackage[backend=biber, style=ieee, citestyle=numeric]{biblatex}
+
+% Define missing commands
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\pandocbounded}[1]{\csname pandocbounded#1\endcsname}
+
+% Custom environments for technical reports
+\newenvironment{executivesummary}{
+  \begin{tcolorbox}[
+    colback=lightgray,
+    colframe=corporateblue,
+    boxrule=2pt,
+    arc=5pt,
+    left=10pt,
+    right=10pt,
+    top=10pt,
+    bottom=10pt,
+    title={\textcolor{white}{\textbf{Executive Summary}}},
+    coltitle=white,
+    colbacktitle=corporateblue
+  ]
+}{
+  \end{tcolorbox}
+}
+
+\newenvironment{keyfindings}{
+  \begin{tcolorbox}[
+    colback=white,
+    colframe=accentorange,
+    boxrule=2pt,
+    arc=5pt,
+    left=10pt,
+    right=10pt,
+    top=10pt,
+    bottom=10pt,
+    title={\textcolor{white}{\textbf{Key Findings}}},
+    coltitle=white,
+    colbacktitle=accentorange
+  ]
+}{
+  \end{tcolorbox}
+}
+
+% Sidebar commands for marginpar
+\newcommand{\sidenote}[1]{%
+  \marginpar{%
+    \begin{tcolorbox}[
+      colback=lightgray,
+      colframe=corporategray,
+      boxrule=1pt,
+      arc=3pt,
+      left=5pt,
+      right=5pt,
+      top=5pt,
+      bottom=5pt,
+      width=\textwidth
+    ]
+    \footnotesize #1
+    \end{tcolorbox}
+  }%
+}
+
+\newcommand{\sidestat}[2]{%
+  \marginpar{%
+    \begin{tcolorbox}[
+      colback=corporateblue,
+      colframe=corporateblue,
+      boxrule=0pt,
+      arc=3pt,
+      left=5pt,
+      right=5pt,
+      top=5pt,
+      bottom=5pt,
+      width=\textwidth
+    ]
+    \centering
+    \textcolor{white}{\textbf{\Large #1}}\\
+    \textcolor{white}{\footnotesize #2}
+    \end{tcolorbox}
+  }%
+}
+
+% Caption styling
+\usepackage[font=small,
+            labelfont=bf,
+            labelsep=period,
+            justification=justified]{caption}
+
+% Title page customization
+\makeatletter
+\def\@maketitle{%
+  \newpage
+  \null
+  \vskip 2em%
+  \begin{center}%
+    \begin{tcolorbox}[
+      colback=corporateblue,
+      colframe=corporateblue,
+      boxrule=0pt,
+      arc=10pt,
+      left=20pt,
+      right=20pt,
+      top=20pt,
+      bottom=20pt,
+      width=0.9\textwidth
+    ]
+    \centering
+    \textcolor{white}{\textbf{\LARGE TECHNICAL REPORT}}\\[1em]
+    \textcolor{white}{\textbf{\Large $title$}}\\[2em]
+    \textcolor{white}{\large $author$}\\[1em]
+    \textcolor{white}{\large $date$}
+    \end{tcolorbox}
+  \end{center}%
+  \par
+  \vskip 1.5em}
+\makeatother
+
+% Begin document
+\begin{document}
+
+% Print title page
+\maketitle
+\thispagestyle{empty}
+
+% Executive summary if provided
+$if(abstract)$
+\begin{executivesummary}
+$abstract$
+\end{executivesummary}
+\newpage
+$endif$
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% Main document content
+$body$
+
+% References section if provided
+$if(bibliography)$
+\newpage
+\printbibliography[title=References]
+$endif$
+
+\end{document}

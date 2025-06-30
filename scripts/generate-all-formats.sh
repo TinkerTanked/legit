@@ -39,11 +39,14 @@ OUTPUT_DIR="pdfs"
 QUIET=false
 VERBOSE=false
 SPECIFIC_FILES=()
-FORMATS=("scientific" "academic")
+FORMATS=("scientific" "academic" "technical-report" "preprint" "thesis")
 
 # Templates for each format
 SCIENTIFIC_TEMPLATE="templates/scientific-paper.tex"
 ACADEMIC_TEMPLATE="templates/academic-paper.tex"
+TECHNICAL_REPORT_TEMPLATE="templates/technical-report.tex"
+PREPRINT_TEMPLATE="templates/preprint.tex"
+THESIS_TEMPLATE="templates/thesis.tex"
 
 # ===== Helper Functions =====
 
@@ -281,14 +284,27 @@ function generate_pdf {
     local output_pdf="$output_dir/$format/$filename.pdf"
     
     # Choose the template based on the format
-    if [[ "$format" == "scientific" ]]; then
-        template="$SCIENTIFIC_TEMPLATE"
-    elif [[ "$format" == "academic" ]]; then
-        template="$ACADEMIC_TEMPLATE"
-    else
-        log_error "Unknown format: $format"
-        return 1
-    fi
+    case "$format" in
+        "scientific")
+            template="$SCIENTIFIC_TEMPLATE"
+            ;;
+        "academic")
+            template="$ACADEMIC_TEMPLATE"
+            ;;
+        "technical-report")
+            template="$TECHNICAL_REPORT_TEMPLATE"
+            ;;
+        "preprint")
+            template="$PREPRINT_TEMPLATE"
+            ;;
+        "thesis")
+            template="$THESIS_TEMPLATE"
+            ;;
+        *)
+            log_error "Unknown format: $format"
+            return 1
+            ;;
+    esac
     
     log_info "Generating $format PDF for $input_file..."
     

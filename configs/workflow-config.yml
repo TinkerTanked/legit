@@ -12,7 +12,11 @@ include_files:
 
 # Template settings
 template_file: "templates/scientific-paper.tex"
+scientific_template_file: "templates/scientific-paper.tex"
 academic_template_file: "templates/academic-paper.tex"
+technical_report_template_file: "templates/technical-report.tex"
+preprint_template_file: "templates/preprint.tex"
+thesis_template_file: "templates/thesis.tex"
 
 # Image settings
 images_directory: "figures"
@@ -52,6 +56,7 @@ additional_packages:
 # Format-specific settings
 formats:
   scientific:
+    enabled: true
     header-includes:
       - "\\usepackage{physics}"
       - "\\usepackage{siunitx}"
@@ -61,3 +66,28 @@ formats:
       - "\\usepackage{algpseudocode}"
       - "\\usepackage{booktabs}"
       - "\\usepackage{longtable}"
+  academic:
+    enabled: true
+    header-includes:
+      - "\\usepackage{physics}"
+      - "\\usepackage{mathtools}"
+      - "\\usepackage{amsmath,amssymb}"
+  technical-report:
+    enabled: true
+    header-includes:
+      - "\\usepackage{tcolorbox}"
+      - "\\usepackage{tikz}"
+      - "\\usepackage{mdframed}"
+  preprint:
+    enabled: true
+    header-includes:
+      - "\\usepackage{tcolorbox}"
+      - "\\usepackage{physics}"
+      - "\\usepackage{mathtools}"
+  thesis:
+    enabled: true
+    header-includes:
+      - "\\usepackage{tocloft}"
+      - "\\usepackage{titlesec}"
+      - "\\usepackage{physics}"
+      - "\\usepackage{mathtools}"

@@ -139,11 +139,27 @@ load_config() {
   OUTPUT_DIR=$(get_config_value "output_directory" "pdfs")
   
   # Template settings based on format
-  if [ "$format" = "academic" ]; then
-    TEMPLATE_FILE=$(get_config_value "academic_template_file" "$PROJECT_ROOT/templates/academic-paper.tex")
-  else
-    TEMPLATE_FILE=$(get_config_value "template_file" "$DEFAULT_TEMPLATE")
-  fi
+  case "$format" in
+    "scientific")
+      TEMPLATE_FILE=$(get_config_value "scientific_template_file" "$PROJECT_ROOT/templates/scientific-paper.tex")
+      ;;
+    "academic")
+      TEMPLATE_FILE=$(get_config_value "academic_template_file" "$PROJECT_ROOT/templates/academic-paper.tex")
+      ;;
+    "technical-report")
+      TEMPLATE_FILE=$(get_config_value "technical_report_template_file" "$PROJECT_ROOT/templates/technical-report.tex")
+      ;;
+    "preprint")
+      TEMPLATE_FILE=$(get_config_value "preprint_template_file" "$PROJECT_ROOT/templates/preprint.tex")
+      ;;
+    "thesis")
+      TEMPLATE_FILE=$(get_config_value "thesis_template_file" "$PROJECT_ROOT/templates/thesis.tex")
+      ;;
+    *)
+      log_warning "Unknown format '$format', defaulting to scientific"
+      TEMPLATE_FILE=$(get_config_value "template_file" "$DEFAULT_TEMPLATE")
+      ;;
+  esac
   
   log_info "Using template: $TEMPLATE_FILE"
   

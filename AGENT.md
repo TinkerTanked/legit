@@ -10,10 +10,10 @@
 
 ## Architecture
 - **Document Conversion System**: Markdown → PDF using Pandoc + LaTeX
-- **Multi-format Templates**: Scientific (2-column) and Academic (single-column) styles
+- **5-Format Templates**: Scientific (2-column), Academic (single-column), Technical Report (corporate), Preprint (online), Thesis (formal)
 - **Core Scripts**: `convert-markdown.sh` (single conversion), `generate-all-formats.sh` (multi-format)
 - **Configuration**: YAML-based config in `configs/workflow-config.yml`
-- **Templates**: LaTeX templates in `templates/` directory
+- **Templates**: LaTeX templates in `templates/` directory (5 professional formats)
 - **SVG Processing**: Auto-converts SVG to PDF using Inkscape/rsvg-convert
 - **CI/CD**: GitHub Actions for automated PDF generation and S3 upload
 
