@@ -1,201 +1,63 @@
-# Workflow Configuration
-# This file contains configuration settings for the markdown-to-pdf conversion workflow
+# Legit Workflow Configuration
 
-# General settings
-general:
-  # Default output directory for generated PDFs
-  default_output_dir: "pdfs"
-  # Figure directory containing images referenced in markdown files
-  figure_dir: "figures"
-  # Whether to generate an index of PDF files
-  generate_index: true
-  # Default language for documents
-  language: "en-US"
+# Input/Output settings
+input_directory: "content"
+output_directory: "pdfs"
+file_pattern: "*.md"  # Which markdown files to process
+
+# Specific files to always include (even if they don't match the pattern)
+include_files:
+  - "content/example-paper.md"
+  - "content/simple-test.md"
+
+# Template settings
+template_file: "templates/scientific-paper.tex"
+academic_template_file: "templates/academic-paper.tex"
+
+# Image settings
+images_directory: "figures"
+
+# PDF engine
+pdf_engine: "xelatex"
+
+# Additional LaTeX packages to install
+additional_packages:
+  - "lmodern"
+  - "microtype"
+  - "amsmath"
+  - "amssymb"
+  - "mathtools"
+  - "physics"
+  - "fancyhdr"
+  - "graphicx"
+  - "adjustbox"
+  - "rotating"
+  - "pdflscape"
+  - "float"
+  - "booktabs"
+  - "longtable"
+  - "array"
+  - "multirow"
+  - "tabularx"
+  - "threeparttable"
+  - "hyperref"
+  - "cleveref"
+  - "biblatex"
+  - "listings"
+  - "algorithm"
+  - "algpseudocode"
+  - "xcolor"
+  - "caption"
 
 # Format-specific settings
 formats:
-  # Scientific paper format
   scientific:
-    # Output directory for scientific format PDFs
-    output_dir: "pdfs/scientific"
-    # Template file for scientific papers
-    template: "templates/scientific-paper.tex"
-    # PDF engine to use
-    pdf_engine: "xelatex"
-    # Additional pandoc options for scientific papers
-    pandoc_options:
-      - "--number-sections"
-      - "--bibliography=references.bib"
-      - "--csl=templates/ieee.csl"
-    # LaTeX-specific variables
-    variables:
-      fontsize: "11pt"
-      papersize: "letterpaper"
-      geometry: "margin=1in"
-      # Scientific-specific packages/settings
-      linkcolor: "blue"
-      header-includes:
-        - "\\usepackage{amsmath}"
-        - "\\usepackage{amssymb}"
-        - "\\usepackage{siunitx}"
-    
-  # Academic paper format
-  academic:
-    # Output directory for academic format PDFs
-    output_dir: "pdfs/academic"
-    # Template file for academic papers
-    template: "templates/academic-paper.tex"
-    # PDF engine to use
-    pdf_engine: "xelatex"
-    # Additional pandoc options for academic papers
-    pandoc_options:
-      - "--number-sections"
-      - "--bibliography=references.bib"
-      - "--csl=templates/chicago.csl"
-    # LaTeX-specific variables
-    variables:
-      fontsize: "12pt"
-      papersize: "a4paper"
-      geometry: "margin=2.5cm"
-      # Academic-specific packages/settings
-      linkcolor: "black"
-      header-includes:
-        - "\\usepackage{times}"
-        - "\\usepackage{setspace}"
-        - "\\doublespacing"
-
-# Input settings
-input:
-  # Directories to search for markdown files
-  content_dirs:
-    - "content"
-  # Specific files to process (leave empty to process all .md files in content_dirs)
-  specific_files: []
-  # Files to exclude from processing
-  exclude_files:
-    - "README.md"
-    - "LICENSE.md"
-
-# Output settings
-output:
-  # Whether to include timestamps in filenames
-  include_timestamp: true
-  # Whether to create "latest" copies of PDFs
-  create_latest_copies: true
-  # File extension for output files
-  extension: "pdf"
-
-# S3 upload settings (used in GitHub workflow)
-s3_upload:
-  # Whether to upload PDFs to S3
-  enabled: true
-  # S3 bucket name (override with GitHub secret)
-  bucket: "${S3_BUCKET}"
-  # Path prefix in the S3 bucket
-  prefix: "papers"
-  # Whether to make uploaded files public
-  public: true
-  # ACL for uploaded files
-  acl: "public-read"
-  # Content type for uploaded files
-  content_type: "application/pdf"
-
-# Workflow Configuration File
-# This file defines the configuration parameters for the Markdown to PDF GitHub workflow
-
-# General settings
-general:
-  # Whether to run the workflow in debug mode (provides more verbose output)
-  debug: false
-  # The timezone to use for date formatting in generated PDFs
-  timezone: "UTC"
-  # Whether to create an index file listing all generated PDFs
-  create_index: true
-
-# Input settings
-input:
-  # Directory containing markdown files to process
-  content_dir: "content"
-  # File pattern to match markdown files (use globbing pattern)
-  file_pattern: "*.md"
-  # Specific files to always include (even if they don't match the pattern)
-  include_files:
-    - "content/example-paper.md"
-  # Files to exclude (even if they match the pattern)
-  exclude_files:
-    - "README.md"
-
-# Output settings
-output:
-  # Directory to store generated PDFs
-  pdf_dir: "pdfs"
-  # Directory for any intermediate files (e.g., temporary LaTeX files)
-  temp_dir: ".tmp"
-  # Format for timestamped versioning of PDFs
-  timestamp_format: "%Y%m%d-%H%M%S"
-  # Whether to keep a "latest" version of each PDF without timestamp
-  keep_latest: true
-  # Whether to keep the original filenames or transform them
-  # Options: "original", "lowercase", "kebab-case"
-  filename_format: "original"
-
-# Template settings
-template:
-  # Directory containing LaTeX templates
-  template_dir: "templates"
-  # Default LaTeX template to use
-  default_template: "scientific-paper.tex"
-  # Map of markdown files to specific templates (if different from default)
-  file_templates:
-    # "content/special-paper.md": "special-template.tex"
-
-# Asset settings
-assets:
-  # Directory containing images and other assets
-  figures_dir: "figures"
-  # Whether to embed images directly in PDFs or link them
-  embed_images: true
-  # Default DPI for rasterized images
-  image_dpi: 300
-  # Supported image formats
-  supported_formats:
-    - ".png"
-    - ".jpg"
-    - ".jpeg"
-    - ".svg"
-    - ".pdf"
-
-# LaTeX settings
-latex:
-  # LaTeX engine to use with Pandoc
-  # Options: "pdflatex", "xelatex", "lualatex"
-  engine: "xelatex"
-  # Additional LaTeX packages to include
-  additional_packages:
-    - "microtype"
-    - "booktabs"
-  # Bibliography settings
-  bibliography:
-    # Whether to process citations
-    enabled: true
-    # Citation style (e.g., APA, IEEE, etc.)
-    style: "ieee"
-    # Default .bib file to use if not specified in markdown frontmatter
-    default_bibfile: "references/bibliography.bib"
-
-# S3 upload settings
-s3_upload:
-  # Whether to upload PDFs to S3
-  enabled: true
-  # Base path in the S3 bucket 
-  base_path: "papers"
-  # Whether to organize PDFs in subdirectories by date
-  organize_by_date: true
-  # ACL for uploaded objects
-  # Options: "private", "public-read", "public-read-write", "authenticated-read"
-  acl: "public-read"
-  # Cache control settings for S3 objects
-  cache_control: "max-age=86400"
-  # Content type for PDFs
-  content_type: "application/pdf"
-
+    header-includes:
+      - "\\usepackage{physics}"
+      - "\\usepackage{siunitx}"
+      - "\\usepackage{mathtools}"
+      - "\\usepackage{amsmath,amssymb}"
+      - "\\usepackage{algorithm}"
+      - "\\usepackage{algpseudocode}"
+      - "\\usepackage{booktabs}"
+      - "\\usepackage{longtable}"
