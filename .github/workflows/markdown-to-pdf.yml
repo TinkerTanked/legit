@@ -41,7 +41,7 @@ jobs:
             output_dir: pdfs/academic
     container:
       image: pandoc/latex:latest-ubuntu
-      options: --user root
+      options: --user 1001:1001
     
     steps:
       # Step 1: Check out the repository content
@@ -145,15 +145,25 @@ jobs:
           mkdir -p "${{ env.OUTPUT_DIR }}"
           
           if [ -n "${{ github.event.inputs.markdown_file }}" ]; then
-            # Use manually specified file
-            FILE_PATH="content/${{ github.event.inputs.markdown_file }}"
-            if [[ "${{ github.event.inputs.markdown_file }}" == content/* ]]; then
-              FILE_PATH="${{ github.event.inputs.markdown_file }}"
-            fi
-            if [ -f "$FILE_PATH" ]; then
-              echo "MARKDOWN_FILES=$FILE_PATH" >> $GITHUB_ENV
+            # Sanitize input file path to prevent directory traversal
+            SANITIZED_INPUT="$(echo "${{ github.event.inputs.markdown_file }}" | sed 's/\.\.\/\|\.\.\\//g' | sed 's/[^a-zA-Z0-9._\/\-]//g')"
+            
+            # Ensure the file is within content/ directory
+            if [[ "$SANITIZED_INPUT" == content/* ]]; then
+              FILE_PATH="$SANITIZED_INPUT"
             else
-              echo "::error::Specified markdown file $FILE_PATH does not exist"
+              FILE_PATH="content/$SANITIZED_INPUT"
+            fi
+            
+            # Additional validation: ensure file is actually within content/ directory
+            REAL_PATH="$(realpath "$FILE_PATH" 2>/dev/null || echo "INVALID")"
+            CONTENT_DIR="$(realpath content/)"
+            
+            if [[ "$REAL_PATH" == "$CONTENT_DIR"/* ]] && [[ "$REAL_PATH" == *.md ]] && [ -f "$FILE_PATH" ]; then
+              echo "MARKDOWN_FILES=$FILE_PATH" >> $GITHUB_ENV
+              echo "Using validated file: $FILE_PATH"
+            else
+              echo "::error::Invalid or unsafe file path. Must be a .md file within content/ directory."
               exit 1
             fi
           elif [ "${{ github.event.inputs.regenerate_all }}" == "true" ]; then

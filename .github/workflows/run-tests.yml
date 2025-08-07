@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: pandoc/latex:latest-ubuntu
-      options: --user root
+      options: --user 1001:1001
     
     steps:
       # Step 1: Check out the repository content

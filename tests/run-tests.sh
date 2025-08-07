@@ -59,10 +59,19 @@ main() {
   
   setup
   
-  # Find and run all test files
-  for test_file in "${SCRIPT_DIR}"/*_test.sh; do
+  # Explicit allowlist of test files for security
+  local allowed_tests=(
+    "convert_markdown_test.sh"
+    "generate_all_formats_test.sh"
+  )
+  
+  # Run only explicitly allowed test files
+  for test_name in "${allowed_tests[@]}"; do
+    test_file="${SCRIPT_DIR}/${test_name}"
     if [ -f "${test_file}" ]; then
       run_test "${test_file}"
+    else
+      echo -e "${YELLOW}Warning: Test file not found: ${test_name}${NC}"
     fi
   done
   
