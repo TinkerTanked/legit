@@ -23,6 +23,8 @@ cleanup() {
 setup() {
   cleanup
   mkdir -p "${TEST_TEMP_DIR}"
+  # Set restricted permissions for security (only owner can read/write/execute)
+  chmod 700 "${TEST_TEMP_DIR}"
 }
 
 # Run on exit

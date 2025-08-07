@@ -81,8 +81,15 @@ COPY scripts/ /workspace/scripts/
 COPY templates/ /workspace/templates/
 COPY tests/ /workspace/tests/
 
-# Make scripts executable
-RUN chmod +x /workspace/scripts/*.sh /workspace/tests/*.sh
+# Make scripts executable with granular permissions
+RUN chmod 755 /workspace/scripts/convert-markdown.sh \
+    && chmod 755 /workspace/scripts/generate-all-formats.sh \
+    && chmod 755 /workspace/scripts/simple-convert.sh \
+    && chmod 755 /workspace/scripts/simple-convert-unix.sh \
+    && chmod 755 /workspace/tests/run-tests.sh \
+    && chmod 755 /workspace/tests/convert_markdown_test.sh \
+    && chmod 755 /workspace/tests/generate_all_formats_test.sh \
+    && chmod 644 /workspace/scripts/*.lua
 
 # Set PATH to include our scripts
 ENV PATH="/workspace/scripts:${PATH}"
