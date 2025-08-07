@@ -30,6 +30,17 @@ LOG_FILE="$PROJECT_ROOT/conversion.log"
 # UTILITY FUNCTIONS
 # ============================================================================
 
+# Function: filter_sensitive_info
+# Description: Filters out potentially sensitive information from log messages
+# Arguments:
+#   $1: Message to filter
+# Returns: Filtered message
+filter_sensitive_info() {
+  local message="$1"
+  # Filter out common patterns for sensitive information
+  echo "$message" | sed -E 's/(password|secret|key|token)=[^[:space:]]*/\1=***REDACTED***/gi'
+}
+
 # Function: log
 # Description: Logs a message with timestamp to both stdout and log file
 # Arguments:
@@ -39,8 +50,9 @@ log() {
   local level="$1"
   local message="$2"
   local timestamp=$(date "+%Y-%m-%d %H:%M:%S")
-  echo "[$timestamp] [$level] $message"
-  echo "[$timestamp] [$level] $message" >> "$LOG_FILE"
+  local filtered_message=$(filter_sensitive_info "$message")
+  echo "[$timestamp] [$level] $filtered_message"
+  echo "[$timestamp] [$level] $filtered_message" >> "$LOG_FILE"
 }
 
 # Function: log_info
@@ -175,6 +187,17 @@ load_config() {
   log_info "Configuration loaded successfully"
 }
 
+# Function: sanitize_input
+# Description: Sanitizes user input to prevent command injection
+# Arguments:
+#   $1: Input string to sanitize
+# Returns: Sanitized string
+sanitize_input() {
+  local input="$1"
+  # Remove potentially dangerous characters and limit to safe character set
+  echo "$input" | sed 's/[`$();|&<>]//g' | head -c 200
+}
+
 # Function: process_metadata
 # Description: Extracts metadata from markdown file
 # Arguments:
@@ -195,22 +218,22 @@ process_metadata() {
     # Using sed to extract values between YAML frontmatter delimiters
     YAML_BLOCK=$(sed -n '/^---$/,/^---$/p' "$md_file")
     
-    # Extract specific fields
+    # Extract specific fields with sanitization
     LOCAL_TITLE=$(echo "$YAML_BLOCK" | grep -oP "^title:\s*\K.*" | tr -d '"' | tr -d "'")
     LOCAL_AUTHOR=$(echo "$YAML_BLOCK" | grep -oP "^author:\s*\K.*" | tr -d '"' | tr -d "'")
     LOCAL_DATE=$(echo "$YAML_BLOCK" | grep -oP "^date:\s*\K.*" | tr -d '"' | tr -d "'")
     
-    # Use extracted values if they exist
+    # Sanitize extracted values and use them if they exist
     if [ -n "$LOCAL_TITLE" ]; then
-      TITLE="$LOCAL_TITLE"
+      TITLE=$(sanitize_input "$LOCAL_TITLE")
     fi
     
     if [ -n "$LOCAL_AUTHOR" ]; then
-      AUTHOR="$LOCAL_AUTHOR"
+      AUTHOR=$(sanitize_input "$LOCAL_AUTHOR")
     fi
     
     if [ -n "$LOCAL_DATE" ]; then
-      DATE="$LOCAL_DATE"
+      DATE=$(sanitize_input "$LOCAL_DATE")
     fi
   fi
   

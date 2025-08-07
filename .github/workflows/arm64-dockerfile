@@ -1,5 +1,6 @@
 # Dockerfile for Legit - ARM64 Version
-FROM arm64v8/ubuntu:22.04
+# Pin to specific digest for reproducible builds
+FROM arm64v8/ubuntu:22.04@sha256:6042500cf4b44023ea1894effe7890666b0c5c7871ed83a97c36c76ae560bb9b
 
 # Avoid interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -44,8 +45,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lmodern \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Pandoc
-RUN curl -L https://github.com/jgm/pandoc/releases/download/3.1.9/pandoc-3.1.9-1-arm64.deb -o pandoc.deb \
+# Install Pandoc with checksum verification
+RUN PANDOC_VERSION="3.1.9" \
+    && PANDOC_CHECKSUM="5a4d0c91738d9048a8c93a8ca23cb05ba5b7e0ca5b5e0e89b3caae48e1b89da2" \
+    && curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-arm64.deb -o pandoc.deb \
+    && echo "${PANDOC_CHECKSUM}  pandoc.deb" | sha256sum -c - \
     && dpkg -i pandoc.deb \
     && rm pandoc.deb
 

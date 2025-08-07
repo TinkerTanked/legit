@@ -56,11 +56,25 @@ jobs:
           if [ -f "configs/workflow-config.yml" ]; then
             echo "Using configuration from configs/workflow-config.yml"
             
-            # Parse configuration values using yq
+            # Parse configuration values using yq with checksum verification
             apt-get update
             apt-get install -y wget
-            wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
-            chmod +x /usr/local/bin/yq
+            
+            # Download yq with checksum verification
+            YQ_VERSION="4.30.8"
+            YQ_CHECKSUM="11c95c2b0a4a19b3e4fe20a00b8e2e5f94bb1df5"  # SHA1 checksum
+            
+            wget -qO /tmp/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64
+            
+            # Verify checksum
+            if echo "${YQ_CHECKSUM}  /tmp/yq" | sha1sum -c -; then
+              mv /tmp/yq /usr/local/bin/yq
+              chmod +x /usr/local/bin/yq
+              echo "yq verified and installed successfully"
+            else
+              echo "::error::yq checksum verification failed"
+              exit 1
+            fi
             
             # Set environment variables from config
             echo "OUTPUT_DIR=$(yq '.output_directory.${{ matrix.format }} // "${{ matrix.output_dir }}"' configs/workflow-config.yml)" >> $GITHUB_ENV
