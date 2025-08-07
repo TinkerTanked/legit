@@ -646,11 +646,61 @@ For proper citations:
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+## 🐛 The Reverse Bounty Club
+
+**Found a bug? Congratulations! You just earned yourself a subscription.**
+
+Most projects pay you for finding bugs. We've flipped the script. When you discover a bug in Legit, you get the exclusive privilege of joining our **Reverse Bounty Club** for just $5/month. 
+
+### Why This Actually Makes Sense
+
+- **Quality Assurance Premium**: You're investing in the reliability of your own workflow
+- **Bug Hunter's Badge**: Wear it with pride - you found something we missed
+- **Exclusive Access**: Members get priority support and early access to new features
+- **Skin in the Game**: Nothing motivates faster bug fixes like paying customers who found the bugs themselves
+- **Reverse Psychology**: The fear of subscription prevents casual "this doesn't work" reports (detailed reproductions only, please)
+
+### How It Works
+
+1. **Discover a legitimate bug** (not user error, not feature requests)
+2. **Submit a detailed issue** with reproduction steps, environment details, and expected vs actual behavior
+3. **Get verified** by our team (we're picky about what counts as a "bug")
+4. **Join the club** with your $5/month subscription via [Stripe link coming soon]
+5. **Watch us fix it** with the urgency that only comes from paying customers
+
+### Bug Qualification Criteria
+
+**✅ Counts as a bug:**
+- PDF generation fails with valid markdown
+- Template formatting breaks with specific content
+- Docker container crashes on supported platforms
+- Security vulnerabilities (get free lifetime membership)
+
+**❌ Doesn't count:**
+- "This should work differently" (that's a feature request)
+- User environment issues (install LaTeX properly)
+- "It's slow" without performance benchmarks
+- Markdown syntax errors causing failures
+
+### The Fine Print
+
+- Subscription auto-renews monthly until you cancel
+- One subscription per person, regardless of bugs found
+- Bug must be reproducible and verified by core team
+- We reserve the right to reject frivolous bug reports
+- Subscription includes: priority support, beta access, eternal bragging rights
+
+**Pro tip**: The best way to avoid the subscription? Help us write better tests. Pull requests that prevent bugs are always free and welcomed with gratitude.
+
+---
+
+*"If you're not paying for the product, you are the product. If you found a bug and now you're paying for the product... well, you're still kind of the product, but at least you're a premium product."*
+
 ## Contributing
 
 Contributions to improve Legit are welcome! Please feel free to submit pull requests with:
 - Template improvements
 - Additional features
 - Documentation enhancements
-- Bug fixes
+- Bug fixes (but remember the subscription rule above 😉)
 
