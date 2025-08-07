@@ -665,7 +665,7 @@ Most projects pay you for finding bugs. We've flipped the script. When you disco
 1. **Discover a legitimate bug** (not user error, not feature requests)
 2. **Submit a detailed issue** with reproduction steps, environment details, and expected vs actual behavior
 3. **Get verified** by our team (we're picky about what counts as a "bug")
-4. **Join the club** with your $5/month subscription via [Stripe link coming soon]
+4. **Join the club** with your $5/month subscription via [https://checkout.tinkertank.rocks/b/aFa6oHbMj64B7LueMKbQY1Q](https://checkout.tinkertank.rocks/b/aFa6oHbMj64B7LueMKbQY1Q)
 5. **Watch us fix it** with the urgency that only comes from paying customers
 
 ### Bug Qualification Criteria
