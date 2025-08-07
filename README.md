@@ -27,6 +27,33 @@
 
 ---
 
+## 🐛💸 Found a Bug? Time to Pay Up!
+
+<div align="center">
+  <h3>🎯 <strong>REVERSE BOUNTY CLUB</strong> 🎯</h3>
+  <p><em>The only bug bounty program where YOU pay US</em></p>
+  
+  <a href="https://checkout.tinkertank.rocks/b/aFa6oHbMj64B7LueMKbQY1Q">
+    <img src="https://img.shields.io/badge/Join%20Club-$5%2Fmonth-ff6b6b?style=for-the-badge&logo=stripe&logoColor=white" alt="Join Reverse Bounty Club">
+  </a>
+  
+  <br><br>
+  
+  <table>
+    <tr>
+      <td>🔍 <strong>Find Bug</strong></td>
+      <td>💳 <strong>Pay $5/month</strong></td>
+      <td>⚡ <strong>Get Priority Fix</strong></td>
+    </tr>
+  </table>
+  
+  <p><strong>Why?</strong> Because nothing motivates faster bug fixes like paying customers who found the bugs themselves.</p>
+  
+  <a href="#-the-reverse-bounty-club">📖 Read Full Details Below</a>
+</div>
+
+---
+
 This repository contains a powerful document conversion system that automatically transforms markdown files into professionally formatted PDF documents using multiple customizable templates. The system integrates with GitHub Actions to provide continuous delivery of beautifully formatted scientific papers, academic documents, and technical reports — all from a single markdown source.
 
 ## Overview
